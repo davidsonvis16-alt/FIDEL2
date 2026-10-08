@@ -1,7 +1,7 @@
 import { MotionConfig, motion, useScroll, useSpring } from 'framer-motion'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
-import { Ticker, Services, Numbers, About, Skills } from './components/Sections'
+import { Services, Numbers, About, Skills } from './components/Sections'
 import Automation from './components/Automation'
 import Contact from './components/Contact'
 
@@ -14,7 +14,6 @@ export default function App() {
       <Nav />
       <main>
         <Hero />
-        <Ticker />
         <Services />
         <Numbers />
         <About />

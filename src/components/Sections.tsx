@@ -132,7 +132,7 @@ export function Numbers() {
         >
           Mbita High School,
           <br />
-          2022 – 2023
+          2022 – 2025
         </motion.p>
         {stats.map((s) => (
           <div

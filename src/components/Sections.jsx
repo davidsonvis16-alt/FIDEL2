@@ -85,7 +85,7 @@ export function Numbers() {
           viewport={{ once: true }} transition={{ type: 'spring', stiffness: 180, damping: 12, delay: 0.4 }}
           className="absolute -top-7 right-4 rounded-md border-[1.5px] border-ink bg-paper px-3.5 pb-2 pt-1 font-hand text-2xl leading-none md:right-10 md:text-[28px]"
         >
-          Mbita High School,<br />2022 – 2023
+          Mbita High School,<br />2022 – 2025
         </motion.p>
         {stats.map((s) => (
           <div key={s.label} className="[&_strong]:block [&_strong]:font-display [&_strong]:text-[clamp(64px,8vw,116px)] [&_strong]:font-black [&_strong]:leading-[.9] [&_strong]:tracking-[-.04em] [&_strong]:[font-stretch:72%]">

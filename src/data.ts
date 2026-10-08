@@ -69,7 +69,7 @@ export interface Experience {
 }
 export const experience: Experience[] = [
   {
-    date: 'Jan 2022 – May 2023',
+    date: 'Jan 2022 – 2025',
     title: 'Student Success Coach',
     where: 'Mbita High School, Homa Bay, Kenya',
     points: [

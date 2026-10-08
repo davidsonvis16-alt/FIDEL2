@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { nav, contact } from '../data'
 
-export function Bolt({ className = '' }) {
+export function Logo({ className = '' }) {
   return (
     <svg viewBox="0 0 40 28" aria-hidden="true" className={className}>
-      <path d="M3 18 L22 4 L18 13 L37 9 L14 25 L19 15 Z" className="fill-sun stroke-ink" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M10 14 V20.5 Q20 25.5 30 20.5 V14 L20 18 Z" className="fill-sun stroke-ink" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M20 3 L38 10 L20 17 L2 10 Z" className="fill-sun stroke-ink" strokeWidth="1.6" strokeLinejoin="round" />
+      <path d="M20 10 L34 11.5 V19" className="fill-none stroke-ink" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="34" cy="20.5" r="1.8" className="fill-ink" />
     </svg>
   )
 }
@@ -37,7 +40,7 @@ export default function Nav() {
       className={`sticky top-0 z-50 flex items-center gap-6 border-b px-4 py-4 backdrop-blur-md transition-colors sm:px-[4vw] xl:px-14 bg-paper/90 ${scrolled ? 'border-line' : 'border-transparent'}`}
     >
       <a href="#top" className="mr-auto flex items-center gap-2.5 no-underline" aria-label="Fidel Castrol, home">
-        <Bolt className="w-[34px]" />
+        <Logo className="w-[38px]" />
         <span className="flex flex-col leading-tight">
           <strong className="font-display text-[21px] font-extrabold tracking-tight [font-stretch:95%]">Fidel Castrol</strong>
           <small className="text-[10.5px] uppercase tracking-[.2em] text-ink-2">Student Success Coach</small>
