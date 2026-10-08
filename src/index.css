@@ -1,0 +1,153 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource-variable/instrument-sans';
+@import '@fontsource-variable/caveat';
+@import 'lenis/dist/lenis.css';
+
+@theme {
+  --color-paper: #f5f2ea;
+  --color-paper-2: #ece7da;
+  --color-ink: #121212;
+  --color-ink-2: #3a3a36;
+  --color-muted: #6b6a63;
+  --color-line: #d9d3c3;
+  --color-sun: #f3e600;
+  --color-night: #141413;
+  --color-night-2: #1c1c1a;
+  --color-night-line: #34342f;
+
+  --font-display: 'Archivo Variable', 'Arial Black', sans-serif;
+  --font-body: 'Instrument Sans Variable', system-ui, sans-serif;
+  --font-hand: 'Caveat Variable', 'Comic Sans MS', cursive;
+}
+
+@layer base {
+  html {
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-paper text-ink font-body antialiased;
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: clip;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection {
+    background: var(--color-sun);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer components {
+  .kicker {
+    @apply font-display inline-flex items-center gap-2.5 text-xs font-bold uppercase;
+    font-stretch: 110%;
+    letter-spacing: 0.22em;
+  }
+  .kicker::before {
+    content: '';
+    width: 22px;
+    height: 8px;
+    border-radius: 2px;
+    background: var(--color-sun);
+    transform: skewX(-20deg);
+  }
+  .h2 {
+    @apply font-display mt-3.5 mb-5 leading-[.95] font-extrabold;
+    font-size: clamp(36px, 5.2vw, 68px);
+    font-stretch: 88%;
+  }
+  .btn {
+    @apply border-ink inline-flex items-center justify-center gap-2.5 rounded-full border-[1.5px] px-6 py-3 text-[15px] font-semibold no-underline transition-all duration-200;
+  }
+  .btn-lg {
+    @apply px-7 py-4 text-base;
+  }
+  .btn-sun {
+    @apply bg-sun shadow-[3px_3px_0_var(--color-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--color-ink)];
+  }
+  .btn-ghost {
+    @apply hover:bg-ink hover:text-paper bg-transparent;
+  }
+  .btn .arrow {
+    @apply transition-transform duration-200;
+  }
+  .btn:hover .arrow {
+    @apply translate-x-1;
+  }
+  .stroke-text {
+    -webkit-text-stroke: 2px var(--color-ink);
+    color: transparent;
+  }
+  @media (max-width: 600px) {
+    .stroke-text {
+      -webkit-text-stroke-width: 1.5px;
+    }
+  }
+}
+
+@keyframes tick {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-tick {
+  animation: tick 32s linear infinite;
+}
+@keyframes wheel {
+  0% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.animate-wheel {
+  animation: wheel 1.6s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-tick,
+  .animate-wheel {
+    animation: none;
+  }
+}
+
+/* lightbox theming */
+.yarl__root {
+  --yarl__color_backdrop: rgba(10, 10, 9, 0.94);
+}
+.yarl__slide_title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 85%;
+  font-size: 22px;
+}
+.yarl__slide_description {
+  color: #b5b3aa;
+}
+.yarl__counter {
+  font-family: var(--font-body);
+}
