@@ -5,6 +5,8 @@ export const contact = {
   location: 'Homa Bay, Kenya',
   whatsapp:
     'https://wa.me/254706577697?text=Hi%20Fidel%2C%20I%27d%20like%20to%20book%20a%20coaching%20session.',
+  hubspotWhatsapp:
+    'https://wa.me/254706577697?text=Hi%20Fidel%2C%20I%27m%20interested%20in%20learning%20HubSpot%20with%20you.',
 } as const
 
 export const nav = [
@@ -13,6 +15,15 @@ export const nav = [
   { href: '#skills', label: 'Skills' },
   { href: '#automation', label: 'Automation' },
   { href: '#contact', label: 'Contact' },
+  { href: '/hubspot/', label: 'HubSpot' },
+] as const
+
+export const hubspotNav = [
+  { href: '#tracks', label: 'Focus' },
+  { href: '#automation', label: 'Built' },
+  { href: '#learn', label: 'Learn with me' },
+  { href: '#contact', label: 'Contact' },
+  { href: '/', label: 'Portfolio' },
 ] as const
 
 export type ServiceIcon = 'GraduationCap' | 'Clock' | 'Check' | 'Users'
@@ -187,5 +198,70 @@ export const shots: Shot[] = [
     title: 'HubSpot',
     caption: 'Marketing Hub — where it’s all built.',
     alt: 'HubSpot sign at a HubSpot conference',
+  },
+]
+
+export interface Track {
+  title: string
+  status: string
+  points: { label: string; text: string }[]
+}
+export const tracks: Track[] = [
+  {
+    title: 'CRM / Data Specialist & Pipeline Administration',
+    status: 'Foundations',
+    points: [
+      {
+        label: 'Contact management',
+        text: 'Learning the foundations of contact management, customer database cleanliness and tracking operational lifecycle stages.',
+      },
+      {
+        label: 'Sales Hub & pipelines',
+        text: 'Developing competencies in Sales Hub & Pipeline Administration to format deal stages and map visual client journeys.',
+      },
+    ],
+  },
+  {
+    title: 'Inbound & Inside Sales Concepts',
+    status: 'Understanding',
+    points: [
+      {
+        label: 'Lead conversion',
+        text: 'Understanding standard lead conversion methodologies, contact engagement workflows and communication qualification frameworks.',
+      },
+      {
+        label: 'Marketing Hub',
+        text: 'Actively exploring Marketing Hub execution & lead management to understand lead-scoring basics and alignment strategies.',
+      },
+    ],
+  },
+  {
+    title: 'Digital Marketing Assistance & Analytics',
+    status: 'In training',
+    points: [
+      {
+        label: 'Engagement',
+        text: 'Exploring multi-channel content pathways, automated engagement logic and basic audience segmentation.',
+      },
+      {
+        label: 'Reporting',
+        text: 'Training in basic reporting & dashboard maintenance to extract actionable metric interpretations and update core tracking screens.',
+      },
+    ],
+  },
+]
+
+export const learnSteps = [
+  {
+    title: 'Message me',
+    text: 'Say where you are with HubSpot (never opened it is fine) and what you want to use it for.',
+  },
+  {
+    title: 'Pick one area',
+    text: 'CRM and pipelines, inbound and lead management, or reporting. One at a time.',
+  },
+  {
+    title: 'Build something real',
+    text: 'We work in a free HubSpot account and check in each week, so you keep going.',
   },
 ]

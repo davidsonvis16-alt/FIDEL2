@@ -5,5 +5,17 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    // src/ still has stale .js/.jsx copies; make sure the TypeScript sources win
+    extensions: ['.tsx', '.ts', '.mjs', '.js', '.jsx', '.json'],
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        hubspot: fileURLToPath(new URL('./hubspot/index.html', import.meta.url)),
+      },
+    },
+  },
 })

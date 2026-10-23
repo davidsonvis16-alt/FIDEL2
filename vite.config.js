@@ -1,7 +1,21 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+    // src/ still has stale .js/.jsx copies; make sure the TypeScript sources win
+    extensions: ['.tsx', '.ts', '.mjs', '.js', '.jsx', '.json'],
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        hubspot: fileURLToPath(new URL('./hubspot/index.html', import.meta.url)),
+      },
+    },
+  },
 })

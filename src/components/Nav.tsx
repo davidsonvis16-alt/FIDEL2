@@ -7,15 +7,41 @@ import { nav, contact } from '@/data'
 export function Logo({ className = '' }: { className?: string }) {
   return (
     <svg viewBox="0 0 40 28" aria-hidden="true" className={className}>
-      <path d="M10 14 V20.5 Q20 25.5 30 20.5 V14 L20 18 Z" className="fill-sun stroke-ink" strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M20 3 L38 10 L20 17 L2 10 Z" className="fill-sun stroke-ink" strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M20 10 L34 11.5 V19" className="fill-none stroke-ink" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M10 14 V20.5 Q20 25.5 30 20.5 V14 L20 18 Z"
+        className="fill-sun stroke-ink"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20 3 L38 10 L20 17 L2 10 Z"
+        className="fill-sun stroke-ink"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20 10 L34 11.5 V19"
+        className="stroke-ink fill-none"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
       <circle cx="34" cy="20.5" r="1.8" className="fill-ink" />
     </svg>
   )
 }
 
-export default function Nav() {
+interface NavProps {
+  links?: readonly { href: string; label: string }[]
+  subtitle?: string
+  cta?: { label: string; href: string }
+}
+
+export default function Nav({
+  links = nav,
+  subtitle = 'Student Success Coach',
+  cta = { label: 'Book a Session', href: contact.whatsapp },
+}: NavProps) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [active, setActive] = useState('')
@@ -59,12 +85,12 @@ export default function Nav() {
           <strong className="font-display text-[21px] font-extrabold tracking-tight [font-stretch:95%]">
             Fidel Castrol
           </strong>
-          <small className="text-ink-2 text-[10.5px] tracking-[.2em] uppercase">Student Success Coach</small>
+          <small className="text-ink-2 text-[10.5px] tracking-[.2em] uppercase">{subtitle}</small>
         </span>
       </a>
 
       <nav className="hidden gap-8 md:flex" aria-label="Main">
-        {nav.map((l) => (
+        {links.map((l) => (
           <a
             key={l.href}
             href={l.href}
@@ -81,8 +107,8 @@ export default function Nav() {
         ))}
       </nav>
 
-      <a className="btn btn-sun hidden md:inline-flex" href={contact.whatsapp} target="_blank" rel="noopener">
-        Book a Session{' '}
+      <a className="btn btn-sun hidden md:inline-flex" href={cta.href} target="_blank" rel="noopener">
+        {cta.label}{' '}
         <span className="arrow" aria-hidden="true">
           →
         </span>
@@ -116,7 +142,7 @@ export default function Nav() {
             aria-label="Mobile"
             data-lenis-prevent
           >
-            {nav.map((l, i) => (
+            {links.map((l, i) => (
               <motion.a
                 key={l.href}
                 href={l.href}
@@ -130,8 +156,8 @@ export default function Nav() {
                 <span className="text-muted text-sm font-semibold">0{i + 1}</span>
               </motion.a>
             ))}
-            <a className="btn btn-sun btn-lg mt-8" href={contact.whatsapp} target="_blank" rel="noopener">
-              Book a Session{' '}
+            <a className="btn btn-sun btn-lg mt-8" href={cta.href} target="_blank" rel="noopener">
+              {cta.label}{' '}
               <span className="arrow" aria-hidden="true">
                 →
               </span>
