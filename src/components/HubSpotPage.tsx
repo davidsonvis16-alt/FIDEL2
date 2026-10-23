@@ -1,319 +1,315 @@
-import { lazy, Suspense, useState } from 'react'
-import { MotionConfig, motion } from 'motion/react'
-import { ArrowDown, ArrowRight, ArrowUpRight, Clock, Mail } from 'lucide-react'
-import Nav from '@/components/Nav'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import {
+  AnimatePresence,
+  MotionConfig,
+  animate,
+  motion,
+  useInView,
+  useScroll,
+  useTransform,
+} from 'motion/react'
+import { ArrowUpRight, RotateCcw } from 'lucide-react'
 import Reveal from '@/components/Reveal'
 import { cn } from '@/lib/cn'
 import { ease } from '@/lib/motion'
-import { contact, flow, hubspotNav, learnSteps, shots, tracks, type Track } from '@/data'
+import { contact, flow, learnSteps, quiz, shots, stats, tracks, type Shot } from '@/data'
 
 const ShotLightbox = lazy(() => import('@/components/ShotLightbox'))
 
-const wrap = 'mx-auto max-w-[1180px] px-4 sm:px-8'
+const wrap = 'mx-auto max-w-[1240px] px-4 sm:px-8'
+const serif = 'font-serif font-normal tracking-[-.02em]'
 const photo = shots.find((s) => s.kind === 'photo')!
-const gallery = shots.filter((s) => s.kind !== 'photo')
 const mail = `mailto:${contact.email}?subject=${encodeURIComponent('Learning HubSpot')}`
+const wa = (text: string) =>
+  `https://wa.me/${contact.phone.replace('+', '')}?text=${encodeURIComponent(text)}`
 
-const stages = ['Curious', 'Learner', 'Practitioner', 'Specialist']
-const stageNow = 1
+// funnel steps in order, each paired with the screenshot that shows it
+const byName = (name: string) => shots.find((s) => s.src.includes(name))!
+const steps: { step: (typeof flow)[number]; shot: Shot }[] = [
+  { step: flow[0], shot: byName('landing-page') },
+  { step: flow[1], shot: byName('email-1') },
+  { step: flow[2], shot: byName('workflow') },
+  { step: flow[3], shot: byName('email-2') },
+]
 
-const trackBg: Record<Track['color'], string> = {
-  blush: 'bg-blush',
-  mint: 'bg-mint',
-  lilac: 'bg-lilac',
+function Label({ n, children }: { n: string; children: string }) {
+  return (
+    <p className="text-ash flex items-center gap-3 text-[13px] tracking-[.18em] uppercase">
+      <span className="text-gold">{n}</span>
+      <span className="bg-coal-line h-px w-10" />
+      {children}
+    </p>
+  )
 }
 
-const h2 =
-  'font-display text-[clamp(38px,5.6vw,76px)] leading-[.95] font-black tracking-[-.03em] [font-stretch:80%]'
-
-/** Fidel's own HubSpot-style contact record. */
-function RecordCard() {
+function Header() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40, rotate: 0 }}
-      animate={{ opacity: 1, y: 0, rotate: -2 }}
-      transition={{ duration: 0.9, ease, delay: 0.3 }}
-      className="border-ink bg-cream w-full max-w-[440px] rounded-2xl border-2 p-6 shadow-[10px_10px_0_var(--color-ink)] md:justify-self-end"
-    >
-      <p className="text-ink/60 text-xs font-semibold tracking-[.16em] uppercase">Contact record</p>
-      <div className="mt-4 flex items-center gap-4">
-        <span className="bg-forest font-display text-mint grid h-16 w-16 shrink-0 place-items-center rounded-full text-2xl font-black">
-          FC
-        </span>
-        <div>
-          <p className="font-display text-2xl leading-tight font-extrabold">Fidel Castrol</p>
-          <p className="text-ink-2 text-sm">Student success coach, now learning HubSpot</p>
-        </div>
-      </div>
-
-      <div className="border-ink/15 mt-6 border-t pt-5">
-        <p className="text-ink/60 text-xs font-semibold">Lifecycle stage</p>
-        <div className="mt-2 grid grid-cols-4 gap-1.5">
-          {stages.map((s, i) => (
-            <div key={s}>
-              <motion.span
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.5, delay: 0.9 + i * 0.12 }}
-                className={cn('block h-2 origin-left rounded-full', i <= stageNow ? 'bg-tang' : 'bg-ink/10')}
-              />
-              <span className={cn('mt-1.5 block text-[11px]', i === stageNow ? 'font-bold' : 'text-ink/50')}>
-                {s}
-              </span>
-            </div>
+    <header className="bg-coal/80 sticky top-0 z-50 border-b border-white/5 backdrop-blur-md">
+      <div className={cn(wrap, 'flex items-center gap-8 py-4')}>
+        <a href="/" className={cn(serif, 'mr-auto text-2xl no-underline')}>
+          Fidel Castrol<span className="text-gold">.</span>
+        </a>
+        <nav aria-label="Main" className="text-ash hidden gap-7 text-sm md:flex">
+          {[
+            ['#skills', 'Skills'],
+            ['#work', 'Work'],
+            ['#start', 'Start here'],
+            ['/', 'Portfolio'],
+          ].map(([href, label]) => (
+            <a key={href} href={href} className="hover:text-bone no-underline transition-colors">
+              {label}
+            </a>
           ))}
-        </div>
+        </nav>
+        <a
+          href="#start"
+          className="border-gold/60 text-gold hover:bg-gold hover:text-coal rounded-full border px-4 py-2 text-sm font-medium no-underline transition-colors"
+        >
+          Let’s talk
+        </a>
       </div>
-
-      <dl className="mt-5 space-y-3 text-[15px]">
-        {[
-          [
-            'Lead status',
-            <span className="bg-mint rounded-full px-2.5 py-0.5 text-sm font-semibold">
-              Open to study partners
-            </span>,
-          ],
-          ['Based in', contact.location],
-          ['Languages', 'English, Swahili'],
-          [
-            'Contact owner',
-            <a href="#contact" className="text-tang font-bold underline-offset-4 hover:underline">
-              Could be you →
-            </a>,
-          ],
-        ].map(([k, v]) => (
-          <div
-            key={k as string}
-            className="border-ink/10 flex items-center justify-between gap-4 border-b pb-3 last:border-0"
-          >
-            <dt className="text-ink/60">{k}</dt>
-            <dd className="text-right font-medium">{v}</dd>
-          </div>
-        ))}
-      </dl>
-    </motion.div>
+    </header>
   )
 }
 
 function Hero() {
-  return (
-    <section className="bg-tang relative overflow-hidden">
-      <div
-        className={cn(
-          wrap,
-          'grid grid-cols-1 items-center gap-14 pt-12 pb-20 md:grid-cols-[1.25fr_1fr] md:pt-20 md:pb-28',
-        )}
-      >
-        <div>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-ink text-cream inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium"
-          >
-            <span className="bg-mint h-2 w-2 animate-pulse rounded-full" /> Taking on study partners
-          </motion.p>
-          <h1 className="font-display mt-7 text-[clamp(60px,9.6vw,140px)] leading-[.86] font-black tracking-[-.04em] [font-stretch:76%]">
-            {['Learn', 'HubSpot', 'with Fidel.'].map((w, i) => (
-              <span key={w} className="block overflow-hidden pb-[.05em]">
-                <motion.span
-                  initial={{ y: '105%' }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 0.85, ease, delay: 0.05 + i * 0.1 }}
-                  className={cn('block', i === 2 && 'text-cream')}
-                >
-                  {w}
-                </motion.span>
-              </span>
-            ))}
-          </h1>
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease, delay: 0.5 }}
-            className="mt-8 max-w-[46ch] text-lg font-medium"
-          >
-            I’ve spent years coaching students to stay consistent. Now I’m training in HubSpot (CRM,
-            pipelines, inbound, reporting), and the fastest way to learn it is together. Starting from zero?
-            Good. So did I.
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease, delay: 0.65 }}
-            className="mt-9 flex flex-col gap-3 sm:flex-row"
-          >
-            <a
-              className="btn btn-lg border-ink bg-ink text-cream hover:bg-forest hover:border-forest"
-              href={contact.hubspotWhatsapp}
-              target="_blank"
-              rel="noopener"
-            >
-              Learn HubSpot with me{' '}
-              <span className="arrow" aria-hidden="true">
-                →
-              </span>
-            </a>
-            <a className="btn btn-ghost btn-lg" href="#tracks">
-              See my pipeline <ArrowDown size={16} aria-hidden="true" />
-            </a>
-          </motion.div>
-        </div>
-        <RecordCard />
-      </div>
-    </section>
-  )
-}
+  const ref = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '18%'])
+  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.12])
 
-function Pipeline() {
-  return (
-    <section id="tracks" className="bg-cream scroll-mt-20 py-20 md:py-28">
-      <div className={wrap}>
-        <Reveal className="grid grid-cols-1 items-end gap-6 md:grid-cols-[1.2fr_1fr]">
-          <h2 className={h2}>
-            My skills, as a <span className="text-tang">deal pipeline.</span>
-          </h2>
-          <p className="text-ink-2 text-lg">
-            Pipelines are one of the things I’m training in, so here’s my own progress in one. I’m not
-            certified yet. This board shows where I honestly am.
-          </p>
-        </Reveal>
+  const lines = [
+    <>Learn HubSpot</>,
+    <>
+      with someone <em className="text-gold">in</em>
+    </>,
+    <>
+      <em className="text-gold">your corner.</em>
+    </>,
+  ]
 
-        <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {tracks.map((t, i) => (
-            <Reveal key={t.title} delay={i * 0.1} className="bg-ink/[.04] flex flex-col rounded-2xl p-3">
-              <div className="flex items-center justify-between px-2 pt-1 pb-3">
-                <p className="text-sm font-bold">{t.status}</p>
-                <span className="bg-ink/10 rounded-full px-2 text-xs font-semibold">1</span>
-              </div>
-              <motion.article
-                whileHover={{ y: -4, rotate: -0.6 }}
-                className="border-ink flex-1 rounded-xl border-[1.5px] bg-white p-5 shadow-[4px_4px_0_var(--color-ink)]"
+  return (
+    <section ref={ref} className="relative">
+      <div className={cn(wrap, 'pt-16 pb-14 md:pt-24')}>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="text-ash flex items-baseline gap-3 text-[13px] tracking-[.18em] uppercase"
+        >
+          <span className="relative flex h-2 w-2 shrink-0 -translate-y-px">
+            <span className="bg-gold absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" />
+            <span className="bg-gold relative inline-flex h-2 w-2 rounded-full" />
+          </span>
+          Homa Bay, Kenya · In HubSpot training · Open to study partners
+        </motion.p>
+
+        <h1 className={cn(serif, 'mt-8 text-[clamp(54px,10vw,152px)] leading-[.92]')}>
+          {lines.map((l, i) => (
+            <span key={i} className="block overflow-hidden pb-[.06em]">
+              <motion.span
+                className="block"
+                initial={{ y: '110%' }}
+                animate={{ y: 0 }}
+                transition={{ duration: 1.1, ease, delay: 0.15 + i * 0.12 }}
               >
-                <span className={cn('block h-1.5 w-12 rounded-full', trackBg[t.color])} />
-                <h3 className="mt-4 text-xl leading-tight font-bold">{t.title}</h3>
-                <dl className="mt-5 space-y-4">
-                  {t.points.map((p) => (
-                    <div key={p.label}>
-                      <dt
-                        className={cn('inline-block rounded px-1.5 text-sm font-semibold', trackBg[t.color])}
-                      >
-                        {p.label}
-                      </dt>
-                      <dd className="text-ink-2 mt-1.5 text-[14.5px] leading-relaxed">{p.text}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </motion.article>
-            </Reveal>
+                {l}
+              </motion.span>
+            </span>
           ))}
-          <Reveal delay={0.3} className="flex flex-col rounded-2xl p-3">
-            <div className="flex items-center justify-between px-2 pt-1 pb-3">
-              <p className="text-sm font-bold">Goal</p>
-              <span className="bg-ink/10 rounded-full px-2 text-xs font-semibold">0</span>
-            </div>
-            <div className="border-ink/30 grid flex-1 place-items-center rounded-xl border-2 border-dashed p-6 text-center">
-              <div>
-                <p className="font-display text-2xl font-extrabold [font-stretch:85%]">Certified</p>
-                <p className="text-ink-2 mt-2 text-sm">
-                  Where this pipeline is headed. Want to get there together?
-                </p>
-                <a href="#contact" className="text-tang mt-4 inline-block text-sm font-bold">
-                  Join me →
-                </a>
-              </div>
-            </div>
-          </Reveal>
-        </div>
+        </h1>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease, delay: 0.7 }}
+          className="mt-12 grid grid-cols-1 items-end gap-8 md:grid-cols-[1fr_auto]"
+        >
+          <p className="text-ash max-w-[54ch] text-lg">
+            I’m Fidel. I spent years coaching students to stay consistent, and now I’m training in HubSpot:
+            CRM, pipelines, inbound and reporting. If you want to learn it too, you don’t have to do it alone.
+          </p>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a
+              href="#start"
+              className="bg-gold text-coal group inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
+            >
+              Find your starting point
+              <ArrowUpRight size={18} className="transition-transform group-hover:rotate-45" />
+            </a>
+            <a
+              href="#work"
+              className="border-coal-line hover:border-bone inline-flex items-center justify-center rounded-full border px-7 py-4 no-underline transition-colors"
+            >
+              See my work
+            </a>
+          </div>
+        </motion.div>
       </div>
+
+      <motion.div
+        initial={{ clipPath: 'inset(12% 8% 0 8% round 24px)' }}
+        animate={{ clipPath: 'inset(0% 0% 0 0% round 0px)' }}
+        transition={{ duration: 1.4, ease, delay: 0.4 }}
+        className="relative h-[52vh] max-h-[860px] overflow-hidden md:h-[78vh]"
+      >
+        <motion.img
+          style={{ y: imgY, scale: imgScale }}
+          src={photo.src}
+          alt={photo.alt}
+          width={photo.w}
+          height={photo.h}
+          className="h-full w-full object-cover brightness-[.7]"
+        />
+        <div className="from-coal absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+        <p className={cn(wrap, 'text-ash absolute inset-x-0 bottom-6 text-sm')}>
+          HubSpot · the platform every project below is built in
+        </p>
+      </motion.div>
     </section>
   )
 }
 
-function Built() {
+function Skills() {
+  return (
+    <section id="skills" className={cn(wrap, 'scroll-mt-20 py-24 md:py-36')}>
+      <Reveal className="grid grid-cols-1 gap-8 md:grid-cols-[1fr_1fr]">
+        <Label n="01">What I’m training in</Label>
+        <p className="text-ash text-lg">
+          Not certified yet. I’d rather show you exactly where I am than oversell it. Three areas, worked
+          through in a structured way.
+        </p>
+      </Reveal>
+
+      <ol className="mt-16">
+        {tracks.map((t, i) => (
+          <Reveal
+            as="li"
+            key={t.title}
+            delay={i * 0.08}
+            className="group border-coal-line grid grid-cols-1 gap-x-10 gap-y-6 border-t py-10 last:border-b md:grid-cols-[80px_1.1fr_1.4fr] md:py-14"
+          >
+            <span className={cn(serif, 'text-ash group-hover:text-gold text-4xl transition-colors')}>
+              0{i + 1}
+            </span>
+            <div>
+              <h3 className={cn(serif, 'text-[clamp(30px,3.4vw,46px)] leading-[1.02]')}>{t.title}</h3>
+              <p className="text-gold mt-4 text-sm tracking-[.14em] uppercase">{t.status}</p>
+              <span className="bg-coal-line mt-3 block h-px w-full max-w-[220px] overflow-hidden">
+                <motion.span
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: (i + 1) / 4 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.2, ease, delay: 0.3 }}
+                  className="bg-gold block h-full origin-left"
+                />
+              </span>
+            </div>
+            <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              {t.points.map((p) => (
+                <div key={p.label}>
+                  <dt className="font-semibold">{p.label}</dt>
+                  <dd className="text-ash mt-2 text-[15px] leading-relaxed">{p.text}</dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+function StepShot({
+  s,
+  i,
+  onActive,
+  onOpen,
+}: {
+  s: Shot
+  i: number
+  onActive: (i: number) => void
+  onOpen: () => void
+}) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const inView = useInView(ref, { margin: '-45% 0px -45% 0px' })
+  useEffect(() => {
+    if (inView) onActive(i)
+  }, [inView, i, onActive])
+
+  return (
+    <button
+      ref={ref}
+      onClick={onOpen}
+      aria-label={`Enlarge: ${s.title}`}
+      className={cn(
+        'border-coal-line group block w-full cursor-zoom-in overflow-hidden rounded-2xl border bg-white',
+        s.kind === 'phone' && 'mx-auto max-w-[380px]',
+      )}
+    >
+      <img
+        src={s.src}
+        alt={s.alt}
+        width={s.w}
+        height={s.h}
+        loading="lazy"
+        decoding="async"
+        className="w-full transition-transform duration-700 group-hover:scale-[1.02]"
+      />
+    </button>
+  )
+}
+
+function Work() {
+  const [active, setActive] = useState(0)
   const [index, setIndex] = useState(-1)
 
   return (
-    <section
-      id="automation"
-      className="bg-forest text-cream scroll-mt-20 rounded-t-[32px] py-20 md:rounded-t-[48px] md:py-28"
-    >
+    <section id="work" className="bg-coal-2 scroll-mt-20 py-24 md:py-36">
       <div className={wrap}>
-        <Reveal className="max-w-[720px]">
-          <p className="text-mint text-sm font-semibold">Practice project · Marketing Hub</p>
-          <h2 className={cn(h2, 'mt-4')}>Built, not just studied.</h2>
-          <p className="text-cream/75 mt-6 text-lg">
-            An inbound lead funnel for a digital marketing agency. A landing page captures the lead, a
-            workflow welcomes them straight away, waits two business days, then follows up with a nurture
-            email.
+        <Reveal className="max-w-[820px]">
+          <Label n="02">Practice project · Marketing Hub</Label>
+          <h2 className={cn(serif, 'mt-8 text-[clamp(42px,6vw,88px)] leading-[.98]')}>
+            An inbound funnel that <em className="text-gold">runs itself.</em>
+          </h2>
+          <p className="text-ash mt-6 max-w-[56ch] text-lg">
+            Built for a digital marketing agency. Someone fills in a form, and HubSpot takes it from there.
           </p>
         </Reveal>
 
-        {/* drawn like a HubSpot workflow: nodes joined by a connector */}
-        <ol className="mt-14 grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-6">
-          {flow.map((f, i) => (
-            <motion.li
-              key={f.title}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.6, ease, delay: i * 0.15 }}
-              className={cn(
-                'relative rounded-2xl p-5',
-                f.wait ? 'border-mint/50 border-2 border-dashed' : 'bg-mint text-ink',
-              )}
-            >
-              <p
+        <div className="mt-20 grid grid-cols-1 gap-12 md:grid-cols-[.8fr_1.2fr] md:gap-20">
+          <ol className="hidden self-start md:sticky md:top-32 md:block">
+            {steps.map(({ step }, i) => (
+              <li
+                key={step.title}
                 className={cn(
-                  'flex items-center gap-2 text-xs font-bold tracking-[.12em] uppercase',
-                  f.wait ? 'text-mint' : 'text-forest',
+                  'border-coal-line border-l-2 py-5 pl-6 transition-all duration-500',
+                  active === i ? 'border-gold opacity-100' : 'opacity-35',
                 )}
               >
-                {f.wait ? <Clock size={14} /> : i === 0 ? <ArrowRight size={14} /> : <Mail size={14} />}
-                {f.tag}
-              </p>
-              <h3 className="mt-3 text-xl font-bold">{f.title}</h3>
-              <p className={cn('mt-1.5 text-[14.5px]', f.wait ? 'text-cream/70' : 'text-ink-2')}>{f.text}</p>
-              {i < flow.length - 1 && (
-                <span
-                  aria-hidden="true"
-                  className="bg-mint/50 absolute -bottom-8 left-8 h-8 w-0.5 lg:top-1/2 lg:-right-6 lg:bottom-auto lg:left-auto lg:h-0.5 lg:w-6"
-                />
-              )}
-            </motion.li>
-          ))}
-        </ol>
+                <p className="text-gold text-xs tracking-[.16em] uppercase">{step.tag}</p>
+                <h3 className={cn(serif, 'mt-1.5 text-3xl')}>{step.title}</h3>
+                <p className="text-ash mt-2 text-[15px]">{step.text}</p>
+              </li>
+            ))}
+          </ol>
 
-        <div className="mt-16 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-4">
-          {gallery.map((s, i) => (
-            <Reveal
-              as="figure"
-              key={s.src}
-              delay={(i % 2) * 0.1}
-              className={s.kind === 'wide' ? 'col-span-2' : 'col-span-1 md:col-span-2 lg:col-span-1'}
-            >
-              <button
-                onClick={() => setIndex(shots.indexOf(s))}
-                aria-label={`Enlarge: ${s.title}`}
-                className={cn(
-                  'group block w-full cursor-zoom-in overflow-hidden rounded-xl bg-white',
-                  s.kind === 'phone' && 'max-h-[460px]',
-                )}
-              >
-                <img
-                  src={s.src}
-                  alt={s.alt}
-                  width={s.w}
-                  height={s.h}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
-                />
-              </button>
-              <figcaption className="text-cream/70 mt-3 text-sm">
-                <span className="text-mint font-semibold">{s.title}.</span> {s.caption}
-              </figcaption>
-            </Reveal>
-          ))}
+          <div className="space-y-20 md:space-y-32">
+            {steps.map(({ step, shot }, i) => (
+              <figure key={shot.src}>
+                {/* on mobile the step text sits above each screenshot instead of in the sticky rail */}
+                <figcaption className="mb-5 md:hidden">
+                  <p className="text-gold text-xs tracking-[.16em] uppercase">{step.tag}</p>
+                  <h3 className={cn(serif, 'mt-1 text-3xl')}>{step.title}</h3>
+                  <p className="text-ash mt-2 text-[15px]">{step.text}</p>
+                </figcaption>
+                <StepShot s={shot} i={i} onActive={setActive} onOpen={() => setIndex(shots.indexOf(shot))} />
+                <p className="text-ash mt-4 text-sm">
+                  <span className="text-bone">{shot.title}.</span> {shot.caption}
+                </p>
+              </figure>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -326,151 +322,214 @@ function Built() {
   )
 }
 
-function Learn() {
+function Score({ to }: { to: number }) {
+  const [v, setV] = useState(0)
+  useEffect(() => {
+    const c = animate(0, to, { duration: 1.2, ease, onUpdate: (x) => setV(Math.round(x)) })
+    return () => c.stop()
+  }, [to])
+  return <>{v}</>
+}
+
+function Start() {
+  const [answers, setAnswers] = useState<number[]>([])
+  const step = answers.length
+  const done = step === quiz.length
+
+  const picked = answers.map((a, q) => quiz[q].options[a])
+  const score = 50 + picked.reduce((n, o) => n + o.points, 0)
+  const grade = score >= 85 ? 'Sales-ready' : score >= 78 ? 'Qualified' : 'Warm lead'
+  const track = done ? tracks[picked[0].track!] : null
+  const message = done
+    ? `Hi Fidel, I'd like to learn HubSpot with you.\n${quiz.map((q, i) => `${q.key}: ${picked[i].label}`).join('\n')}`
+    : ''
+
   return (
-    <section id="learn" className="bg-mint scroll-mt-20 py-20 md:py-28">
-      <div className={cn(wrap, 'grid grid-cols-1 items-center gap-14 md:grid-cols-[1.2fr_1fr]')}>
+    <section id="start" className={cn(wrap, 'scroll-mt-20 py-24 md:py-36')}>
+      <div className="grid grid-cols-1 gap-14 md:grid-cols-[1fr_1.15fr] md:gap-20">
         <Reveal>
-          <h2 className={h2}>
-            Learning alone is where people <span className="text-forest italic">quit.</span>
+          <Label n="03">Start here</Label>
+          <h2 className={cn(serif, 'mt-8 text-[clamp(42px,5.6vw,80px)] leading-[.98]')}>
+            Find your <em className="text-gold">starting point.</em>
           </h2>
-          <p className="text-ink-2 mt-6 max-w-[52ch] text-lg">
-            At Mbita High School I guided 100+ students through that exact problem with a clear plan, small
-            steps and regular check-ins. I’m using the same method to learn HubSpot, and it works better with
-            company.
+          <p className="text-ash mt-6 max-w-[46ch] text-lg">
+            Three quick questions. You’ll get a lead score (lead scoring is one of the things I’m learning)
+            and the track I’d suggest we start with.
           </p>
-          <p className="mt-8 text-sm font-bold">This is for you if you’re…</p>
-          <ul className="mt-3 flex flex-wrap gap-2">
-            {[
-              'a student eyeing CRM or marketing roles',
-              'a small business owner',
-              'switching careers',
-              'curious about HubSpot',
-            ].map((w) => (
-              <li
-                key={w}
-                className="border-ink bg-cream rounded-full border-[1.5px] px-3.5 py-1.5 text-sm font-medium"
-              >
-                {w}
+          <ul className="border-coal-line mt-12 space-y-5 border-t pt-8">
+            {learnSteps.map((s, i) => (
+              <li key={s.title} className="flex gap-5">
+                <span className={cn(serif, 'text-gold text-2xl leading-none')}>{i + 1}</span>
+                <div>
+                  <p className="font-semibold">{s.title}</p>
+                  <p className="text-ash mt-1 text-[15px]">{s.text}</p>
+                </div>
               </li>
             ))}
           </ul>
         </Reveal>
-        <Reveal delay={0.15} as="figure" className="relative">
-          <span
-            aria-hidden="true"
-            className="bg-tang absolute inset-0 translate-x-3 translate-y-3 rounded-[28px]"
-          />
-          <img
-            src={photo.src}
-            alt={photo.alt}
-            width={photo.w}
-            height={photo.h}
-            loading="lazy"
-            className="border-ink relative aspect-[4/5] w-full rounded-[28px] border-2 object-cover"
-          />
+
+        <Reveal
+          delay={0.1}
+          className="bg-coal-2 border-coal-line relative min-h-[480px] rounded-3xl border p-6 sm:p-10"
+        >
+          <div className="mb-10 flex gap-2" aria-hidden="true">
+            {quiz.map((_, i) => (
+              <span key={i} className="bg-coal-line h-1 flex-1 overflow-hidden rounded-full">
+                <motion.span
+                  animate={{ scaleX: i < step ? 1 : 0 }}
+                  transition={{ duration: 0.5, ease }}
+                  className="bg-gold block h-full origin-left"
+                />
+              </span>
+            ))}
+          </div>
+
+          <AnimatePresence mode="wait">
+            {!done ? (
+              <motion.fieldset
+                key={step}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.35, ease }}
+              >
+                <legend className="text-ash text-sm">
+                  Question {step + 1} of {quiz.length}
+                </legend>
+                <p className={cn(serif, 'mt-3 text-[clamp(28px,3vw,40px)] leading-tight')}>
+                  {quiz[step].question}
+                </p>
+                <div className="mt-8 space-y-3">
+                  {quiz[step].options.map((o, i) => (
+                    <button
+                      key={o.label}
+                      onClick={() => setAnswers([...answers, i])}
+                      className="border-coal-line hover:border-gold hover:bg-gold/5 group flex w-full items-center justify-between rounded-2xl border px-5 py-4 text-left text-lg transition-colors"
+                    >
+                      {o.label}
+                      <ArrowUpRight
+                        size={18}
+                        className="text-ash group-hover:text-gold transition-all group-hover:rotate-45"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </motion.fieldset>
+            ) : (
+              <motion.div
+                key="result"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease }}
+              >
+                <p className="text-ash text-sm">Your lead score</p>
+                <div className="mt-2 flex items-end gap-4">
+                  <p className={cn(serif, 'text-gold text-[120px] leading-[.8]')}>
+                    <Score to={score} />
+                  </p>
+                  <p className="border-gold/40 text-gold mb-2 rounded-full border px-3 py-1 text-sm">
+                    {grade}
+                  </p>
+                </div>
+                <p className="text-ash mt-8 text-sm">Where I’d suggest we start</p>
+                <p className={cn(serif, 'mt-1 text-3xl leading-tight')}>{track!.title}</p>
+                <a
+                  href={wa(message)}
+                  target="_blank"
+                  rel="noopener"
+                  className="bg-gold text-coal mt-10 flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
+                >
+                  Send my answers to Fidel <ArrowUpRight size={18} />
+                </a>
+                <button
+                  onClick={() => setAnswers([])}
+                  className="text-ash hover:text-bone mx-auto mt-5 flex items-center gap-2 text-sm"
+                >
+                  <RotateCcw size={14} /> Start over
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Reveal>
       </div>
+    </section>
+  )
+}
 
-      <ol className={cn(wrap, 'mt-16 grid grid-cols-1 gap-4 md:grid-cols-3')}>
-        {learnSteps.map((s, i) => (
-          <Reveal
-            as="li"
-            key={s.title}
-            delay={i * 0.1}
-            className="border-ink bg-cream rounded-2xl border-[1.5px] p-6 shadow-[4px_4px_0_var(--color-ink)]"
-          >
-            <span className="font-display text-tang text-6xl leading-none font-black [font-stretch:75%]">
-              {i + 1}
-            </span>
-            <h3 className="mt-4 text-xl font-bold">{s.title}</h3>
-            <p className="text-ink-2 mt-1.5">{s.text}</p>
-          </Reveal>
-        ))}
-      </ol>
+function Why() {
+  return (
+    <section className="bg-coal-2">
+      <div className={cn(wrap, 'py-24 md:py-36')}>
+        <Reveal>
+          <Label n="04">Why learn with a coach</Label>
+        </Reveal>
+        <Reveal as="blockquote" delay={0.1} className="mt-10 max-w-[1000px]">
+          <p className={cn(serif, 'text-[clamp(34px,4.6vw,68px)] leading-[1.05]')}>
+            “Success isn’t about being the best in the world, it’s about being{' '}
+            <em className="text-gold">better than you were yesterday.</em>”
+          </p>
+        </Reveal>
+        <div className="border-coal-line mt-20 grid grid-cols-1 gap-10 border-t pt-10 sm:grid-cols-3">
+          {stats.map((s, i) => (
+            <Reveal key={s.label} delay={i * 0.1}>
+              <p className={cn(serif, 'text-gold text-7xl leading-none')}>
+                {s.text ?? `${s.value}${s.suffix}`}
+              </p>
+              <p className="text-ash mt-4 max-w-[30ch]">{s.label}</p>
+            </Reveal>
+          ))}
+        </div>
+        <p className="text-ash mt-8 text-sm">From my years as Student Success Coach at Mbita High School.</p>
+      </div>
     </section>
   )
 }
 
 function Contact() {
   return (
-    <section id="contact" className="bg-ink text-cream scroll-mt-20">
-      <div
-        className={cn(wrap, 'grid grid-cols-1 items-center gap-12 py-20 md:grid-cols-[1.1fr_1fr] md:py-28')}
-      >
+    <section id="contact" className="relative overflow-hidden">
+      <div className={cn(wrap, 'py-28 md:py-40')}>
         <Reveal>
-          <h2 className={h2}>
-            Add yourself to <span className="text-tang">the pipeline.</span>
+          <h2 className={cn(serif, 'text-[clamp(64px,13vw,210px)] leading-[.85]')}>
+            Let’s <em className="text-gold">talk.</em>
           </h2>
-          <p className="text-cream/70 mt-6 max-w-[44ch] text-lg">
-            Tell me what you want HubSpot for. One message is enough to get started.
-          </p>
-          <ul className="mt-10 space-y-3">
-            {[
-              ['Email', contact.email, mail],
-              ['Phone', contact.phoneDisplay, `tel:${contact.phone}`],
-            ].map(([k, v, href]) => (
-              <li key={k}>
-                <a href={href} className="group flex items-baseline gap-4 no-underline">
-                  <span className="text-cream/50 w-14 text-sm">{k}</span>
-                  <span className="group-hover:text-tang border-cream/30 border-b text-lg font-semibold transition-colors">
-                    {v}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
         </Reveal>
-
-        {/* a deal card with the visitor as the contact */}
-        <Reveal delay={0.15}>
-          <motion.div
-            whileHover={{ rotate: 0 }}
-            className="bg-tang text-ink rotate-2 rounded-2xl border-2 border-black p-6 shadow-[10px_10px_0_var(--color-mint)] sm:p-8"
-          >
-            <p className="text-xs font-bold tracking-[.16em] uppercase">New deal</p>
-            <p className="font-display mt-3 text-[clamp(28px,3.4vw,40px)] leading-none font-black [font-stretch:80%]">
-              You × Fidel
-            </p>
-            <dl className="mt-6 space-y-2.5 text-[15px]">
-              {[
-                ['Deal', 'Learning HubSpot'],
-                ['Stage', 'First message'],
-                ['Close date', 'Whenever you’re ready'],
-              ].map(([k, v]) => (
-                <div
-                  key={k}
-                  className="flex justify-between gap-4 border-b border-black/15 pb-2.5 last:border-0"
-                >
-                  <dt className="text-ink/70">{k}</dt>
-                  <dd className="text-right font-semibold">{v}</dd>
-                </div>
-              ))}
-            </dl>
+        <Reveal delay={0.1} className="border-coal-line mt-16 grid grid-cols-1 border-t md:grid-cols-3">
+          {[
+            ['WhatsApp', contact.phoneDisplay, contact.hubspotWhatsapp, true],
+            ['Email', contact.email, mail, false],
+            ['Phone', contact.phoneDisplay, `tel:${contact.phone}`, false],
+          ].map(([k, v, href, ext]) => (
             <a
-              href={contact.hubspotWhatsapp}
-              target="_blank"
-              rel="noopener"
-              className="btn btn-lg bg-ink text-cream hover:bg-forest mt-7 w-full border-black"
+              key={k as string}
+              href={href as string}
+              {...(ext ? { target: '_blank', rel: 'noopener' } : {})}
+              className="border-coal-line group flex items-center justify-between gap-4 border-b py-7 no-underline md:border-r md:border-b-0 md:px-6 md:first:pl-0 md:last:border-r-0"
             >
-              Start on WhatsApp <ArrowUpRight size={18} aria-hidden="true" />
+              <span className="min-w-0">
+                <span className="text-ash block text-sm">{k}</span>
+                <span className="group-hover:text-gold mt-1 block truncate text-lg transition-colors">
+                  {v}
+                </span>
+              </span>
+              <ArrowUpRight className="text-ash group-hover:text-gold shrink-0 transition-all group-hover:rotate-45" />
             </a>
-          </motion.div>
+          ))}
         </Reveal>
       </div>
-
       <footer
         className={cn(
           wrap,
-          'text-cream/50 flex flex-wrap justify-between gap-3 border-t border-white/10 py-6 text-sm',
+          'text-ash flex flex-wrap justify-between gap-3 border-t border-white/5 py-6 text-sm',
         )}
       >
         <p>© {new Date().getFullYear()} Fidel Castrol</p>
         <div className="flex gap-6">
-          <a href="/" className="hover:text-tang no-underline">
+          <a href="/" className="hover:text-gold no-underline">
             Main portfolio
           </a>
-          <a href="/Fidel-Castrol-Resume.pdf" download className="hover:text-tang no-underline">
+          <a href="/Fidel-Castrol-Resume.pdf" download className="hover:text-gold no-underline">
             Resume (PDF)
           </a>
         </div>
@@ -482,20 +541,17 @@ function Contact() {
 export default function HubSpotPage() {
   return (
     <MotionConfig reducedMotion="user">
-      <Nav
-        links={hubspotNav}
-        subtitle="Learning HubSpot"
-        cta={{ label: 'Learn with me', href: contact.hubspotWhatsapp }}
-        className="bg-cream/90"
-        ctaClassName="bg-tang text-ink"
-      />
-      <main>
-        <Hero />
-        <Pipeline />
-        <Built />
-        <Learn />
-        <Contact />
-      </main>
+      <div className="bg-coal text-bone selection:bg-gold selection:text-coal [&_:focus-visible]:outline-gold min-h-screen">
+        <Header />
+        <main>
+          <Hero />
+          <Skills />
+          <Work />
+          <Start />
+          <Why />
+          <Contact />
+        </main>
+      </div>
     </MotionConfig>
   )
 }

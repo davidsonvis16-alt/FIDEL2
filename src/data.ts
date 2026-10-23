@@ -18,14 +18,6 @@ export const nav = [
   { href: '/hubspot/', label: 'HubSpot' },
 ] as const
 
-export const hubspotNav = [
-  { href: '#tracks', label: 'Focus' },
-  { href: '#automation', label: 'Built' },
-  { href: '#learn', label: 'Learn with me' },
-  { href: '#contact', label: 'Contact' },
-  { href: '/', label: 'Portfolio' },
-] as const
-
 export type ServiceIcon = 'GraduationCap' | 'Clock' | 'Check' | 'Users'
 export interface Service {
   icon: ServiceIcon
@@ -204,14 +196,12 @@ export const shots: Shot[] = [
 export interface Track {
   title: string
   status: string
-  color: 'blush' | 'mint' | 'lilac'
   points: { label: string; text: string }[]
 }
 export const tracks: Track[] = [
   {
     title: 'CRM / Data Specialist & Pipeline Administration',
     status: 'Foundations',
-    color: 'blush',
     points: [
       {
         label: 'Contact management',
@@ -226,7 +216,6 @@ export const tracks: Track[] = [
   {
     title: 'Inbound & Inside Sales Concepts',
     status: 'Understanding',
-    color: 'mint',
     points: [
       {
         label: 'Lead conversion',
@@ -241,7 +230,6 @@ export const tracks: Track[] = [
   {
     title: 'Digital Marketing Assistance & Analytics',
     status: 'In training',
-    color: 'lilac',
     points: [
       {
         label: 'Engagement',
@@ -267,5 +255,41 @@ export const learnSteps = [
   {
     title: 'Build something real',
     text: 'We work in a free HubSpot account and check in each week, so you keep going.',
+  },
+]
+
+// "Find your starting point" quiz on the HubSpot page — a small lead-scoring demo
+export interface QuizOption {
+  label: string
+  points: number
+  track?: number
+}
+export const quiz: { question: string; key: string; options: QuizOption[] }[] = [
+  {
+    question: 'What do you want HubSpot for?',
+    key: 'Goal',
+    options: [
+      { label: 'A CRM or sales-ops job', points: 0, track: 0 },
+      { label: 'Growing my own business', points: 0, track: 1 },
+      { label: 'Marketing & reporting work', points: 0, track: 2 },
+    ],
+  },
+  {
+    question: 'How well do you know HubSpot?',
+    key: 'Experience',
+    options: [
+      { label: 'Never opened it', points: 25 },
+      { label: 'Clicked around a bit', points: 20 },
+      { label: 'I use it already', points: 12 },
+    ],
+  },
+  {
+    question: 'How much time can you give it each week?',
+    key: 'Time per week',
+    options: [
+      { label: '1–2 hours', points: 10 },
+      { label: '3–5 hours', points: 18 },
+      { label: '6+ hours', points: 22 },
+    ],
   },
 ]
