@@ -25,7 +25,7 @@ npm run lint
 npm run format
 ```
 
-Deploy on Vercel: import the repo, preset **Vite**, defaults are fine.
+Deploy on Vercel: import the repo, preset **Vite**, defaults are fine. Two pages: `/` (portfolio) and `/hubspot` — routed in `src/App.tsx`, with `vercel.json` rewriting `/hubspot` to `index.html`.
 
 ## Editing content
 

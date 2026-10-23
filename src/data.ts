@@ -15,7 +15,7 @@ export const nav = [
   { href: '#skills', label: 'Skills' },
   { href: '#automation', label: 'Automation' },
   { href: '#contact', label: 'Contact' },
-  { href: '/hubspot/', label: 'HubSpot' },
+  { href: '/hubspot', label: 'HubSpot' },
 ] as const
 
 export type ServiceIcon = 'GraduationCap' | 'Clock' | 'Check' | 'Users'

@@ -10,16 +10,15 @@ import {
 } from 'motion/react'
 import { ArrowUpRight, RotateCcw } from 'lucide-react'
 import Reveal from '@/components/Reveal'
+import { Contact, Header, Label } from '@/components/ui'
 import { cn } from '@/lib/cn'
+import { serif, useTitle, wrap } from '@/lib/layout'
 import { ease } from '@/lib/motion'
 import { contact, flow, learnSteps, quiz, shots, stats, tracks, type Shot } from '@/data'
 
 const ShotLightbox = lazy(() => import('@/components/ShotLightbox'))
 
-const wrap = 'mx-auto max-w-[1240px] px-4 sm:px-8'
-const serif = 'font-serif font-normal tracking-[-.02em]'
 const photo = shots.find((s) => s.kind === 'photo')!
-const mail = `mailto:${contact.email}?subject=${encodeURIComponent('Learning HubSpot')}`
 const wa = (text: string) =>
   `https://wa.me/${contact.phone.replace('+', '')}?text=${encodeURIComponent(text)}`
 
@@ -31,46 +30,6 @@ const steps: { step: (typeof flow)[number]; shot: Shot }[] = [
   { step: flow[2], shot: byName('workflow') },
   { step: flow[3], shot: byName('email-2') },
 ]
-
-function Label({ n, children }: { n: string; children: string }) {
-  return (
-    <p className="text-ash flex items-center gap-3 text-[13px] tracking-[.18em] uppercase">
-      <span className="text-gold">{n}</span>
-      <span className="bg-coal-line h-px w-10" />
-      {children}
-    </p>
-  )
-}
-
-function Header() {
-  return (
-    <header className="bg-coal/80 sticky top-0 z-50 border-b border-white/5 backdrop-blur-md">
-      <div className={cn(wrap, 'flex items-center gap-8 py-4')}>
-        <a href="/" className={cn(serif, 'mr-auto text-2xl no-underline')}>
-          Fidel Castrol<span className="text-gold">.</span>
-        </a>
-        <nav aria-label="Main" className="text-ash hidden gap-7 text-sm md:flex">
-          {[
-            ['#skills', 'Skills'],
-            ['#work', 'Work'],
-            ['#start', 'Start here'],
-            ['/', 'Portfolio'],
-          ].map(([href, label]) => (
-            <a key={href} href={href} className="hover:text-bone no-underline transition-colors">
-              {label}
-            </a>
-          ))}
-        </nav>
-        <a
-          href="#start"
-          className="border-gold/60 text-gold hover:bg-gold hover:text-coal rounded-full border px-4 py-2 text-sm font-medium no-underline transition-colors"
-        >
-          Let’s talk
-        </a>
-      </div>
-    </header>
-  )
-}
 
 function Hero() {
   const ref = useRef<HTMLElement>(null)
@@ -486,72 +445,30 @@ function Why() {
   )
 }
 
-function Contact() {
-  return (
-    <section id="contact" className="relative overflow-hidden">
-      <div className={cn(wrap, 'py-28 md:py-40')}>
-        <Reveal>
-          <h2 className={cn(serif, 'text-[clamp(64px,13vw,210px)] leading-[.85]')}>
-            Let’s <em className="text-gold">talk.</em>
-          </h2>
-        </Reveal>
-        <Reveal delay={0.1} className="border-coal-line mt-16 grid grid-cols-1 border-t md:grid-cols-3">
-          {[
-            ['WhatsApp', contact.phoneDisplay, contact.hubspotWhatsapp, true],
-            ['Email', contact.email, mail, false],
-            ['Phone', contact.phoneDisplay, `tel:${contact.phone}`, false],
-          ].map(([k, v, href, ext]) => (
-            <a
-              key={k as string}
-              href={href as string}
-              {...(ext ? { target: '_blank', rel: 'noopener' } : {})}
-              className="border-coal-line group flex items-center justify-between gap-4 border-b py-7 no-underline md:border-r md:border-b-0 md:px-6 md:first:pl-0 md:last:border-r-0"
-            >
-              <span className="min-w-0">
-                <span className="text-ash block text-sm">{k}</span>
-                <span className="group-hover:text-gold mt-1 block truncate text-lg transition-colors">
-                  {v}
-                </span>
-              </span>
-              <ArrowUpRight className="text-ash group-hover:text-gold shrink-0 transition-all group-hover:rotate-45" />
-            </a>
-          ))}
-        </Reveal>
-      </div>
-      <footer
-        className={cn(
-          wrap,
-          'text-ash flex flex-wrap justify-between gap-3 border-t border-white/5 py-6 text-sm',
-        )}
-      >
-        <p>© {new Date().getFullYear()} Fidel Castrol</p>
-        <div className="flex gap-6">
-          <a href="/" className="hover:text-gold no-underline">
-            Main portfolio
-          </a>
-          <a href="/Fidel-Castrol-Resume.pdf" download className="hover:text-gold no-underline">
-            Resume (PDF)
-          </a>
-        </div>
-      </footer>
-    </section>
-  )
-}
+const links = [
+  ['#skills', 'Skills'],
+  ['#work', 'Work'],
+  ['#start', 'Start here'],
+  ['/', 'Portfolio'],
+] as const
 
 export default function HubSpotPage() {
+  useTitle('Learn HubSpot with Fidel Castrol')
   return (
     <MotionConfig reducedMotion="user">
-      <div className="bg-coal text-bone selection:bg-gold selection:text-coal [&_:focus-visible]:outline-gold min-h-screen">
-        <Header />
-        <main>
-          <Hero />
-          <Skills />
-          <Work />
-          <Start />
-          <Why />
-          <Contact />
-        </main>
-      </div>
+      <Header links={links} cta={{ href: '#start', label: 'Let’s talk' }} />
+      <main>
+        <Hero />
+        <Skills />
+        <Work />
+        <Start />
+        <Why />
+        <Contact
+          whatsapp={contact.hubspotWhatsapp}
+          subject="Learning HubSpot"
+          footerLink={{ href: '/', label: 'Main portfolio' }}
+        />
+      </main>
     </MotionConfig>
   )
 }

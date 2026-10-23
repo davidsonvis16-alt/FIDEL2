@@ -10,12 +10,4 @@ export default defineConfig({
     // src/ still has stale .js/.jsx copies; make sure the TypeScript sources win
     extensions: ['.tsx', '.ts', '.mjs', '.js', '.jsx', '.json'],
   },
-  build: {
-    rollupOptions: {
-      input: {
-        main: fileURLToPath(new URL('./index.html', import.meta.url)),
-        hubspot: fileURLToPath(new URL('./hubspot/index.html', import.meta.url)),
-      },
-    },
-  },
 })
