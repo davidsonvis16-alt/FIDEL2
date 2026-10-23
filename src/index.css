@@ -16,6 +16,15 @@
   --color-night-2: #1c1c1a;
   --color-night-line: #34342f;
 
+  /* HubSpot page */
+  --color-tang: #ff5a1f;
+  --color-forest: #0e3b2e;
+  --color-forest-2: #145040;
+  --color-mint: #c9f2d8;
+  --color-cream: #fff6ec;
+  --color-blush: #ffd6c2;
+  --color-lilac: #ddd1ff;
+
   --font-display: 'Archivo Variable', 'Arial Black', sans-serif;
   --font-body: 'Instrument Sans Variable', system-ui, sans-serif;
   --font-hand: 'Caveat Variable', 'Comic Sans MS', cursive;

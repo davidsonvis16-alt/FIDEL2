@@ -35,12 +35,16 @@ interface NavProps {
   links?: readonly { href: string; label: string }[]
   subtitle?: string
   cta?: { label: string; href: string }
+  className?: string
+  ctaClassName?: string
 }
 
 export default function Nav({
   links = nav,
   subtitle = 'Student Success Coach',
   cta = { label: 'Book a Session', href: contact.whatsapp },
+  className,
+  ctaClassName,
 }: NavProps) {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -73,6 +77,7 @@ export default function Nav({
       className={cn(
         'bg-paper/90 sticky top-0 z-50 flex items-center gap-6 border-b px-4 py-4 backdrop-blur-md transition-colors sm:px-[4vw] xl:px-14',
         scrolled ? 'border-line' : 'border-transparent',
+        className,
       )}
     >
       <a
@@ -107,7 +112,12 @@ export default function Nav({
         ))}
       </nav>
 
-      <a className="btn btn-sun hidden md:inline-flex" href={cta.href} target="_blank" rel="noopener">
+      <a
+        className={cn('btn btn-sun hidden md:inline-flex', ctaClassName)}
+        href={cta.href}
+        target="_blank"
+        rel="noopener"
+      >
         {cta.label}{' '}
         <span className="arrow" aria-hidden="true">
           →

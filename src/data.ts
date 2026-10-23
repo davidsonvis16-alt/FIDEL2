@@ -204,12 +204,14 @@ export const shots: Shot[] = [
 export interface Track {
   title: string
   status: string
+  color: 'blush' | 'mint' | 'lilac'
   points: { label: string; text: string }[]
 }
 export const tracks: Track[] = [
   {
     title: 'CRM / Data Specialist & Pipeline Administration',
     status: 'Foundations',
+    color: 'blush',
     points: [
       {
         label: 'Contact management',
@@ -224,6 +226,7 @@ export const tracks: Track[] = [
   {
     title: 'Inbound & Inside Sales Concepts',
     status: 'Understanding',
+    color: 'mint',
     points: [
       {
         label: 'Lead conversion',
@@ -238,6 +241,7 @@ export const tracks: Track[] = [
   {
     title: 'Digital Marketing Assistance & Analytics',
     status: 'In training',
+    color: 'lilac',
     points: [
       {
         label: 'Engagement',
