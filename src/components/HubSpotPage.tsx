@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from 'react'
-import { motion } from 'motion/react'
+import { MotionConfig, motion } from 'motion/react'
 import { ArrowDown, ArrowRight, ArrowUpRight, Clock, Mail } from 'lucide-react'
 import Nav from '@/components/Nav'
 import Reveal from '@/components/Reveal'
@@ -481,7 +481,7 @@ function Contact() {
 
 export default function HubSpotPage() {
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <Nav
         links={hubspotNav}
         subtitle="Learning HubSpot"
@@ -496,6 +496,6 @@ export default function HubSpotPage() {
         <Learn />
         <Contact />
       </main>
-    </>
+    </MotionConfig>
   )
 }
