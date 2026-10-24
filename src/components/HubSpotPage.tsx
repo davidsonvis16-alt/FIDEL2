@@ -1,16 +1,8 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import {
-  AnimatePresence,
-  MotionConfig,
-  animate,
-  motion,
-  useInView,
-  useScroll,
-  useTransform,
-} from 'motion/react'
-import { ArrowUpRight, RotateCcw } from 'lucide-react'
+import { Fragment, lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { MotionConfig, animate, motion, useInView, useScroll, useTransform } from 'motion/react'
+import { ArrowUpRight, RotateCcw, SendHorizontal } from 'lucide-react'
 import Reveal from '@/components/Reveal'
-import { Contact, Header, Label } from '@/components/ui'
+import { Avatar, Bubble, Contact, Header, Label } from '@/components/ui'
 import { cn } from '@/lib/cn'
 import { serif, useTitle, wrap } from '@/lib/layout'
 import { ease } from '@/lib/motion'
@@ -40,10 +32,10 @@ function Hero() {
   const lines = [
     <>Learn HubSpot</>,
     <>
-      with someone <em className="text-gold">in</em>
+      with someone <em className="text-green">in</em>
     </>,
     <>
-      <em className="text-gold">your corner.</em>
+      <em className="text-green">your corner.</em>
     </>,
   ]
 
@@ -57,8 +49,8 @@ function Hero() {
           className="text-ash flex items-baseline gap-3 text-[13px] tracking-[.18em] uppercase"
         >
           <span className="relative flex h-2 w-2 shrink-0 -translate-y-px">
-            <span className="bg-gold absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" />
-            <span className="bg-gold relative inline-flex h-2 w-2 rounded-full" />
+            <span className="bg-green absolute inline-flex h-full w-full animate-ping rounded-full opacity-60" />
+            <span className="bg-green relative inline-flex h-2 w-2 rounded-full" />
           </span>
           Homa Bay, Kenya · In HubSpot training · Open to study partners
         </motion.p>
@@ -91,7 +83,7 @@ function Hero() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <a
               href="#start"
-              className="bg-gold text-coal group inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
+              className="bg-green text-coal group inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
             >
               Find your starting point
               <ArrowUpRight size={18} className="transition-transform group-hover:rotate-45" />
@@ -148,19 +140,19 @@ function Skills() {
             delay={i * 0.08}
             className="group border-coal-line grid grid-cols-1 gap-x-10 gap-y-6 border-t py-10 last:border-b md:grid-cols-[80px_1.1fr_1.4fr] md:py-14"
           >
-            <span className={cn(serif, 'text-ash group-hover:text-gold text-4xl transition-colors')}>
+            <span className={cn(serif, 'text-ash group-hover:text-green text-4xl transition-colors')}>
               0{i + 1}
             </span>
             <div>
               <h3 className={cn(serif, 'text-[clamp(30px,3.4vw,46px)] leading-[1.02]')}>{t.title}</h3>
-              <p className="text-gold mt-4 text-sm tracking-[.14em] uppercase">{t.status}</p>
+              <p className="text-green mt-4 text-sm tracking-[.14em] uppercase">{t.status}</p>
               <span className="bg-coal-line mt-3 block h-px w-full max-w-[220px] overflow-hidden">
                 <motion.span
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: (i + 1) / 4 }}
                   viewport={{ once: true }}
                   transition={{ duration: 1.2, ease, delay: 0.3 }}
-                  className="bg-gold block h-full origin-left"
+                  className="bg-green block h-full origin-left"
                 />
               </span>
             </div>
@@ -229,7 +221,7 @@ function Work() {
         <Reveal className="max-w-[820px]">
           <Label n="02">Practice project · Marketing Hub</Label>
           <h2 className={cn(serif, 'mt-8 text-[clamp(42px,6vw,88px)] leading-[.98]')}>
-            An inbound funnel that <em className="text-gold">runs itself.</em>
+            An inbound funnel that <em className="text-green">runs itself.</em>
           </h2>
           <p className="text-ash mt-6 max-w-[56ch] text-lg">
             Built for a digital marketing agency. Someone fills in a form, and HubSpot takes it from there.
@@ -243,10 +235,10 @@ function Work() {
                 key={step.title}
                 className={cn(
                   'border-coal-line border-l-2 py-5 pl-6 transition-all duration-500',
-                  active === i ? 'border-gold opacity-100' : 'opacity-35',
+                  active === i ? 'border-green opacity-100' : 'opacity-35',
                 )}
               >
-                <p className="text-gold text-xs tracking-[.16em] uppercase">{step.tag}</p>
+                <p className="text-green text-xs tracking-[.16em] uppercase">{step.tag}</p>
                 <h3 className={cn(serif, 'mt-1.5 text-3xl')}>{step.title}</h3>
                 <p className="text-ash mt-2 text-[15px]">{step.text}</p>
               </li>
@@ -258,7 +250,7 @@ function Work() {
               <figure key={shot.src}>
                 {/* on mobile the step text sits above each screenshot instead of in the sticky rail */}
                 <figcaption className="mb-5 md:hidden">
-                  <p className="text-gold text-xs tracking-[.16em] uppercase">{step.tag}</p>
+                  <p className="text-green text-xs tracking-[.16em] uppercase">{step.tag}</p>
                   <h3 className={cn(serif, 'mt-1 text-3xl')}>{step.title}</h3>
                   <p className="text-ash mt-2 text-[15px]">{step.text}</p>
                 </figcaption>
@@ -309,7 +301,7 @@ function Start() {
         <Reveal>
           <Label n="03">Start here</Label>
           <h2 className={cn(serif, 'mt-8 text-[clamp(42px,5.6vw,80px)] leading-[.98]')}>
-            Find your <em className="text-gold">starting point.</em>
+            Find your <em className="text-green">starting point.</em>
           </h2>
           <p className="text-ash mt-6 max-w-[46ch] text-lg">
             Three quick questions. You’ll get a lead score (lead scoring is one of the things I’m learning)
@@ -318,7 +310,7 @@ function Start() {
           <ul className="border-coal-line mt-12 space-y-5 border-t pt-8">
             {learnSteps.map((s, i) => (
               <li key={s.title} className="flex gap-5">
-                <span className={cn(serif, 'text-gold text-2xl leading-none')}>{i + 1}</span>
+                <span className={cn(serif, 'text-green text-2xl leading-none')}>{i + 1}</span>
                 <div>
                   <p className="font-semibold">{s.title}</p>
                   <p className="text-ash mt-1 text-[15px]">{s.text}</p>
@@ -330,86 +322,88 @@ function Start() {
 
         <Reveal
           delay={0.1}
-          className="bg-coal-2 border-coal-line relative min-h-[480px] rounded-3xl border p-6 sm:p-10"
+          className="border-coal-line bg-coal-2 overflow-hidden rounded-2xl border shadow-2xl shadow-black/50"
         >
-          <div className="mb-10 flex gap-2" aria-hidden="true">
-            {quiz.map((_, i) => (
-              <span key={i} className="bg-coal-line h-1 flex-1 overflow-hidden rounded-full">
-                <motion.span
-                  animate={{ scaleX: i < step ? 1 : 0 }}
-                  transition={{ duration: 0.5, ease }}
-                  className="bg-gold block h-full origin-left"
-                />
-              </span>
-            ))}
+          <div className="bg-panel flex items-center gap-3 px-4 py-3">
+            <Avatar />
+            <div className="leading-tight">
+              <p className="font-semibold">Fidel Castrol</p>
+              <p className="text-ash text-xs">
+                {done ? 'Your result is in' : `Question ${step + 1} of ${quiz.length}`}
+              </p>
+            </div>
           </div>
 
-          <AnimatePresence mode="wait">
+          <div className="chat-wall min-h-[480px] space-y-2 px-4 py-6">
+            <Bubble time="now">Three quick questions and I’ll suggest where we start 👇</Bubble>
+            {answers.map((a, q) => (
+              <Fragment key={q}>
+                <Bubble>{quiz[q].question}</Bubble>
+                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+                  <Bubble out time="now">
+                    {quiz[q].options[a].label}
+                  </Bubble>
+                </motion.div>
+              </Fragment>
+            ))}
+
             {!done ? (
-              <motion.fieldset
+              <motion.div
                 key={step}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.35, ease }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease, delay: 0.25 }}
               >
-                <legend className="text-ash text-sm">
-                  Question {step + 1} of {quiz.length}
-                </legend>
-                <p className={cn(serif, 'mt-3 text-[clamp(28px,3vw,40px)] leading-tight')}>
-                  {quiz[step].question}
-                </p>
-                <div className="mt-8 space-y-3">
+                <Bubble>{quiz[step].question}</Bubble>
+                <div className="mt-3 flex flex-wrap gap-2">
                   {quiz[step].options.map((o, i) => (
                     <button
                       key={o.label}
                       onClick={() => setAnswers([...answers, i])}
-                      className="border-coal-line hover:border-gold hover:bg-gold/5 group flex w-full items-center justify-between rounded-2xl border px-5 py-4 text-left text-lg transition-colors"
+                      className="border-green/50 text-green hover:bg-green hover:text-coal-2 bg-coal-2/80 rounded-full border px-4 py-2 text-sm font-medium transition-colors"
                     >
                       {o.label}
-                      <ArrowUpRight
-                        size={18}
-                        className="text-ash group-hover:text-gold transition-all group-hover:rotate-45"
-                      />
                     </button>
                   ))}
                 </div>
-              </motion.fieldset>
+              </motion.div>
             ) : (
               <motion.div
                 key="result"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease }}
+                transition={{ duration: 0.4, ease, delay: 0.25 }}
+                className="space-y-2"
               >
-                <p className="text-ash text-sm">Your lead score</p>
-                <div className="mt-2 flex items-end gap-4">
-                  <p className={cn(serif, 'text-gold text-[120px] leading-[.8]')}>
-                    <Score to={score} />
-                  </p>
-                  <p className="border-gold/40 text-gold mb-2 rounded-full border px-3 py-1 text-sm">
-                    {grade}
-                  </p>
-                </div>
-                <p className="text-ash mt-8 text-sm">Where I’d suggest we start</p>
-                <p className={cn(serif, 'mt-1 text-3xl leading-tight')}>{track!.title}</p>
+                <Bubble>
+                  <span className="text-ash block text-xs">Your lead score</span>
+                  <span className="text-green flex items-end gap-3">
+                    <span className="text-6xl leading-none font-bold tracking-tight">
+                      <Score to={score} />
+                    </span>
+                    <span className="mb-1 text-sm font-semibold">{grade}</span>
+                  </span>
+                </Bubble>
+                <Bubble time="now">
+                  I’d suggest we start with <b>{track!.title}</b>. Send me your answers and we’ll plan it.
+                </Bubble>
                 <a
                   href={wa(message)}
                   target="_blank"
                   rel="noopener"
-                  className="bg-gold text-coal mt-10 flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
+                  className="bg-green text-coal-2 mt-4 flex items-center justify-center gap-2 rounded-full px-6 py-3.5 font-semibold no-underline transition-opacity hover:opacity-90"
                 >
-                  Send my answers to Fidel <ArrowUpRight size={18} />
+                  Send my answers to Fidel <SendHorizontal size={18} />
                 </a>
                 <button
                   onClick={() => setAnswers([])}
-                  className="text-ash hover:text-bone mx-auto mt-5 flex items-center gap-2 text-sm"
+                  className="text-ash hover:text-bone mx-auto mt-3 flex items-center gap-2 text-sm"
                 >
                   <RotateCcw size={14} /> Start over
                 </button>
               </motion.div>
             )}
-          </AnimatePresence>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -426,13 +420,13 @@ function Why() {
         <Reveal as="blockquote" delay={0.1} className="mt-10 max-w-[1000px]">
           <p className={cn(serif, 'text-[clamp(34px,4.6vw,68px)] leading-[1.05]')}>
             “Success isn’t about being the best in the world, it’s about being{' '}
-            <em className="text-gold">better than you were yesterday.</em>”
+            <em className="text-green">better than you were yesterday.</em>”
           </p>
         </Reveal>
         <div className="border-coal-line mt-20 grid grid-cols-1 gap-10 border-t pt-10 sm:grid-cols-3">
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.1}>
-              <p className={cn(serif, 'text-gold text-7xl leading-none')}>
+              <p className={cn(serif, 'text-green text-7xl leading-none')}>
                 {s.text ?? `${s.value}${s.suffix}`}
               </p>
               <p className="text-ash mt-4 max-w-[30ch]">{s.label}</p>
@@ -456,7 +450,7 @@ export default function HubSpotPage() {
   useTitle('Learn HubSpot with Fidel Castrol')
   return (
     <MotionConfig reducedMotion="user">
-      <Header links={links} cta={{ href: '#start', label: 'Let’s talk' }} />
+      <Header links={links} cta={{ href: '#start', label: 'Let’s talk' }} status="Learning HubSpot" />
       <main>
         <Hero />
         <Skills />

@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 
 export const wrap = 'mx-auto max-w-[1240px] px-4 sm:px-8'
-export const serif = 'font-serif font-normal tracking-[-.02em]'
+// display headings; <em> marks the accent words
+export const serif = 'font-body font-bold tracking-[-.035em] [&_em]:not-italic'
 
 export function useTitle(title: string) {
   useEffect(() => {

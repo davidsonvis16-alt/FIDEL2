@@ -1,8 +1,7 @@
-import { useState } from 'react'
 import { MotionConfig, motion } from 'motion/react'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Check, Clock, GraduationCap, SendHorizontal, Users } from 'lucide-react'
 import Reveal from '@/components/Reveal'
-import { Contact, Header, Label } from '@/components/ui'
+import { Avatar, Bubble, Contact, Header, Label, Typing } from '@/components/ui'
 import { cn } from '@/lib/cn'
 import { serif, useTitle, wrap } from '@/lib/layout'
 import { ease } from '@/lib/motion'
@@ -17,12 +16,74 @@ const links = [
 
 const workflow = shots.find((s) => s.src.includes('workflow'))!
 
+const icons = { GraduationCap, Clock, Check, Users }
+
+const demo = [
+  { out: false, text: 'Hi, I’m Fidel 👋' },
+  { out: false, text: 'I coach students on study habits, time management and staying motivated.' },
+  { out: true, text: 'I want better grades but I keep falling behind.' },
+  { out: false, text: 'That’s exactly what I help with. Let’s build a plan that works for you.' },
+]
+
+/** A short scripted chat; the composer bar opens the real WhatsApp chat. */
+function ChatDemo() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 1, ease, delay: 0.2 }}
+      className="border-coal-line bg-coal-2 mx-auto w-full max-w-[440px] overflow-hidden rounded-2xl border shadow-2xl shadow-black/50"
+    >
+      <div className="bg-panel flex items-center gap-3 px-4 py-3">
+        <Avatar />
+        <div className="leading-tight">
+          <p className="font-semibold">Fidel Castrol</p>
+          <p className="text-ash text-xs">Student success coach</p>
+        </div>
+      </div>
+      <div className="chat-wall min-h-[360px] space-y-2 px-4 py-6">
+        {demo.map((m, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 10, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.35, delay: 0.9 + i * 0.8 }}
+          >
+            <Bubble out={m.out} time={`9:4${i}`}>
+              {m.text}
+            </Bubble>
+          </motion.div>
+        ))}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9 + demo.length * 0.8 }}
+        >
+          <Typing />
+        </motion.div>
+      </div>
+      <a
+        href={contact.whatsapp}
+        target="_blank"
+        rel="noopener"
+        className="bg-panel group flex items-center gap-3 px-4 py-3 no-underline"
+      >
+        <span className="bg-coal-line/60 text-ash group-hover:text-bone flex-1 rounded-full px-4 py-2.5 text-sm transition-colors">
+          Type a message to Fidel…
+        </span>
+        <span className="bg-green text-coal-2 grid h-10 w-10 place-items-center rounded-full">
+          <SendHorizontal size={18} />
+        </span>
+      </a>
+    </motion.div>
+  )
+}
+
 function Hero() {
-  const [photoOk, setPhotoOk] = useState(true)
   const lines = [
     <>Better students.</>,
     <>
-      <em className="text-gold">Brighter futures.</em>
+      <em className="text-green">Brighter futures.</em>
     </>,
   ]
 
@@ -30,7 +91,7 @@ function Hero() {
     <section
       className={cn(
         wrap,
-        'grid grid-cols-1 items-end gap-14 pt-16 pb-24 md:grid-cols-[1.5fr_1fr] md:pt-24 md:pb-32',
+        'grid grid-cols-1 items-center gap-14 pt-16 pb-24 md:grid-cols-[1.5fr_1fr] md:pt-24 md:pb-32',
       )}
     >
       <div>
@@ -42,7 +103,7 @@ function Hero() {
         >
           Student success coach · {contact.location}
         </motion.p>
-        <h1 className={cn(serif, 'mt-8 text-[clamp(52px,8.6vw,132px)] leading-[.92]')}>
+        <h1 className={cn(serif, 'mt-8 text-[clamp(52px,7.4vw,112px)] leading-[.92]')}>
           {lines.map((l, i) => (
             <span key={i} className="block overflow-hidden pb-[.06em]">
               <motion.span
@@ -75,7 +136,7 @@ function Hero() {
             href={contact.whatsapp}
             target="_blank"
             rel="noopener"
-            className="bg-gold text-coal group inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
+            className="bg-green text-coal group inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
           >
             Book a coaching session
             <ArrowUpRight size={18} className="transition-transform group-hover:rotate-45" />
@@ -89,40 +150,7 @@ function Hero() {
         </motion.div>
       </div>
 
-      <motion.figure
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, ease, delay: 0.3 }}
-        className="relative mx-auto w-full max-w-[280px] md:max-w-[420px]"
-      >
-        <div className="relative">
-          <div
-            className="border-gold/40 absolute -inset-x-3 -top-3 bottom-0 rounded-t-full border border-b-0"
-            aria-hidden="true"
-          />
-          {photoOk ? (
-            <img
-              src="/images/fidel.jpg"
-              alt="Portrait of Fidel Castrol"
-              width="900"
-              height="1100"
-              onError={() => setPhotoOk(false)}
-              className="bg-coal-2 aspect-[4/5] w-full rounded-t-full object-cover object-top"
-            />
-          ) : (
-            <div
-              aria-hidden="true"
-              className={cn(
-                serif,
-                'bg-coal-2 text-gold grid aspect-[4/5] w-full place-items-center rounded-t-full text-[140px] italic',
-              )}
-            >
-              FC
-            </div>
-          )}
-        </div>
-        <figcaption className="text-ash mt-6 text-center text-sm">Mbita High School, 2022 – 2025</figcaption>
-      </motion.figure>
+      <ChatDemo />
     </section>
   )
 }
@@ -137,7 +165,7 @@ function Numbers() {
             delay={i * 0.1}
             className="border-coal-line border-b py-10 last:border-b-0 sm:border-r sm:border-b-0 sm:px-8 sm:first:pl-0 sm:last:border-r-0"
           >
-            <p className={cn(serif, 'text-gold text-[clamp(56px,6vw,88px)] leading-none')}>
+            <p className={cn(serif, 'text-green text-[clamp(56px,6vw,88px)] leading-none')}>
               {s.text ?? `${s.value}${s.suffix}`}
             </p>
             <p className="text-ash mt-4 max-w-[30ch]">{s.label}</p>
@@ -155,7 +183,7 @@ function Services() {
         <div>
           <Label n="01">Services</Label>
           <h2 className={cn(serif, 'mt-8 text-[clamp(42px,5.6vw,80px)] leading-[.98]')}>
-            Personal support for <em className="text-gold">real progress.</em>
+            Personal support for <em className="text-green">real progress.</em>
           </h2>
         </div>
         <p className="text-ash text-lg">
@@ -164,21 +192,29 @@ function Services() {
         </p>
       </Reveal>
 
-      <ol className="border-coal-line mt-16 grid grid-cols-1 border-t md:grid-cols-2">
-        {services.map((s, i) => (
-          <Reveal
-            as="li"
-            key={s.title}
-            delay={(i % 2) * 0.1}
-            className="group border-coal-line hover:bg-coal-2 border-b px-0 py-10 transition-colors md:px-8 md:odd:border-r md:odd:pl-0 md:even:pr-0"
-          >
-            <span className={cn(serif, 'text-ash group-hover:text-gold text-3xl transition-colors')}>
-              0{i + 1}
-            </span>
-            <h3 className={cn(serif, 'mt-4 text-[clamp(30px,3vw,40px)] leading-tight')}>{s.title}</h3>
-            <p className="text-ash mt-3 max-w-[44ch]">{s.text}</p>
-          </Reveal>
-        ))}
+      <ol className="bg-coal-2 border-coal-line mt-16 grid grid-cols-1 overflow-hidden rounded-2xl border md:grid-cols-2">
+        {services.map((s, i) => {
+          const Icon = icons[s.icon]
+          return (
+            <Reveal
+              as="li"
+              key={s.title}
+              delay={(i % 2) * 0.1}
+              className="hover:bg-panel border-coal-line flex gap-4 border-b p-5 transition-colors sm:p-6 md:odd:border-r md:[&:nth-last-child(-n+2)]:border-b-0"
+            >
+              <span className="bg-bubble text-green grid h-12 w-12 shrink-0 place-items-center rounded-full">
+                <Icon size={22} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h3 className="text-lg font-semibold">{s.title}</h3>
+                  <span className="text-green text-xs">0{i + 1}</span>
+                </div>
+                <p className="text-ash mt-1">{s.text}</p>
+              </div>
+            </Reveal>
+          )
+        })}
       </ol>
     </section>
   )
@@ -191,7 +227,7 @@ function About() {
         <Reveal className="md:sticky md:top-32 md:self-start">
           <Label n="02">About</Label>
           <h2 className={cn(serif, 'mt-8 text-[clamp(42px,5.6vw,80px)] leading-[.98]')}>
-            I’ve been in <em className="text-gold">your shoes.</em>
+            I’ve been in <em className="text-green">your shoes.</em>
           </h2>
           <p className="text-ash mt-6 max-w-[46ch] text-lg">
             I understand the pressure, the doubts and the challenges. I’m a dedicated coach with a track
@@ -218,13 +254,13 @@ function About() {
               delay={i * 0.1}
               className="border-coal-line border-t py-10 first:border-t-0 first:pt-0"
             >
-              <p className="text-gold text-sm tracking-[.14em] uppercase">{e.date}</p>
+              <p className="text-green text-sm tracking-[.14em] uppercase">{e.date}</p>
               <h3 className={cn(serif, 'mt-3 text-[clamp(30px,3vw,42px)] leading-tight')}>{e.title}</h3>
               <p className="text-ash mt-1">{e.where}</p>
               <ul className="mt-6 space-y-3">
                 {e.points.map((p) => (
                   <li key={p} className="text-bone/85 flex gap-4 text-[15.5px]">
-                    <span className="bg-gold mt-[.7em] h-px w-4 shrink-0" />
+                    <span className="bg-green mt-[.7em] h-px w-4 shrink-0" />
                     {p}
                   </li>
                 ))}
@@ -243,7 +279,7 @@ function Quote() {
       <Reveal as="blockquote" className="max-w-[1050px]">
         <p className={cn(serif, 'text-[clamp(34px,4.8vw,72px)] leading-[1.05]')}>
           “Success isn’t about being the best in the world, it’s about being{' '}
-          <em className="text-gold">better than you were yesterday.</em>”
+          <em className="text-green">better than you were yesterday.</em>”
         </p>
         <cite className="text-ash mt-8 block text-sm tracking-[.18em] uppercase not-italic">
           — Fidel Castrol
@@ -259,18 +295,18 @@ function HubSpotTeaser() {
       <Reveal>
         <a
           href="/hubspot"
-          className="border-coal-line bg-coal-2 hover:border-gold/50 group grid grid-cols-1 items-center gap-10 overflow-hidden rounded-3xl border p-6 no-underline transition-colors sm:p-10 md:grid-cols-[1fr_1.1fr] md:p-14"
+          className="border-coal-line bg-coal-2 hover:border-green/50 group grid grid-cols-1 items-center gap-10 overflow-hidden rounded-3xl border p-6 no-underline transition-colors sm:p-10 md:grid-cols-[1fr_1.1fr] md:p-14"
         >
           <div>
             <Label n="03">Now learning</Label>
             <h2 className={cn(serif, 'mt-8 text-[clamp(40px,5vw,72px)] leading-[.98]')}>
-              Learn HubSpot <em className="text-gold">with me.</em>
+              Learn HubSpot <em className="text-green">with me.</em>
             </h2>
             <p className="text-ash mt-6 max-w-[44ch] text-lg">
               I’m training in HubSpot: CRM, pipelines, inbound and reporting. See what I’ve built so far, and
               find your own starting point.
             </p>
-            <span className="text-gold mt-8 inline-flex items-center gap-2 font-semibold">
+            <span className="text-green mt-8 inline-flex items-center gap-2 font-semibold">
               Visit the HubSpot page
               <ArrowUpRight size={18} className="transition-transform group-hover:rotate-45" />
             </span>
@@ -295,7 +331,7 @@ export default function Home() {
   useTitle('Fidel Castrol · Student Success Coach')
   return (
     <MotionConfig reducedMotion="user">
-      <Header links={links} cta={{ href: '#contact', label: 'Let’s talk' }} />
+      <Header links={links} cta={{ href: '#contact', label: 'Let’s talk' }} status="Student success coach" />
       <main>
         <Hero />
         <Numbers />
