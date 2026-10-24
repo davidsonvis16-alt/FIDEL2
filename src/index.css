@@ -2,33 +2,25 @@
 @import '@fontsource-variable/archivo/wdth.css';
 @import '@fontsource-variable/instrument-sans';
 @import '@fontsource-variable/caveat';
+@import '@fontsource-variable/inter/opsz.css';
 @import 'lenis/dist/lenis.css';
 
 @theme {
-  --color-paper: #f5f2ea;
-  --color-paper-2: #ece7da;
-  --color-ink: #121212;
-  --color-ink-2: #3a3a36;
-  --color-muted: #6b6a63;
-  --color-line: #d9d3c3;
+  --color-paper: #ece8e1;
+  --color-paper-2: #e2ddd4;
+  --color-ink: #141413;
+  --color-ink-2: #3d3c38;
+  --color-muted: #7a776f;
+  --color-line: #cdc7bc;
+  --color-blue: #2433d1;
+  --color-red: #d3321f;
   --color-sun: #f3e600;
   --color-night: #141413;
   --color-night-2: #1c1c1a;
   --color-night-line: #34342f;
 
-  /* chat-app palette (both pages) */
-  --color-coal: #0b141a;
-  --color-coal-2: #111b21;
-  --color-panel: #202c33;
-  --color-coal-line: #2a3942;
-  --color-bone: #e9edef;
-  --color-ash: #8696a0;
-  --color-green: #00a884;
-  --color-bubble: #005c4b;
-  --color-tick: #53bdeb;
-
   --font-display: 'Archivo Variable', 'Arial Black', sans-serif;
-  --font-body: 'Instrument Sans Variable', system-ui, sans-serif;
+  --font-body: 'Inter Variable', system-ui, sans-serif;
   --font-hand: 'Caveat Variable', 'Comic Sans MS', cursive;
 }
 
@@ -37,7 +29,7 @@
     overflow-x: clip;
   }
   body {
-    @apply bg-coal text-bone font-body antialiased;
+    @apply bg-paper text-ink font-body antialiased;
     font-size: 17px;
     line-height: 1.6;
     overflow-x: clip;
@@ -48,19 +40,19 @@
     inset: 0;
     pointer-events: none;
     z-index: 100;
-    opacity: 0.5;
-    mix-blend-mode: soft-light;
+    opacity: 0.3;
+    mix-blend-mode: multiply;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   html {
     scroll-behavior: smooth;
   }
   ::selection {
-    background: var(--color-green);
+    background: var(--color-blue);
     color: var(--color-coal);
   }
   :focus-visible {
-    outline: 3px solid var(--color-green);
+    outline: 3px solid var(--color-blue);
     outline-offset: 3px;
     border-radius: 6px;
   }
@@ -166,8 +158,9 @@
   font-family: var(--font-body);
 }
 
-/* doodle wallpaper behind chat bubbles */
+/* faint ruled wallpaper behind the quiz chat */
 .chat-wall {
-  background-color: var(--color-coal);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' fill='none' stroke='%23ffffff' stroke-opacity='.045' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='20' cy='22' r='8'/%3E%3Cpath d='M60 14l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1z'/%3E%3Cpath d='M112 40c4-6 14-1 9 6l-9 8-9-8c-5-7 5-12 9-6z'/%3E%3Cpath d='M14 80q10-10 20 0t20 0'/%3E%3Crect x='80' y='76' width='22' height='16' rx='3'/%3E%3Cpath d='M40 112l8 8 16-18'/%3E%3Ccircle cx='118' cy='112' r='5'/%3E%3C/svg%3E");
+  background-color: var(--color-paper-2);
+  background-image: linear-gradient(var(--color-line) 1px, transparent 1px);
+  background-size: 100% 28px;
 }

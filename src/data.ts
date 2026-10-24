@@ -293,3 +293,65 @@ export const quiz: { question: string; key: string; options: QuizOption[] }[] = 
     ],
   },
 ]
+
+export interface WorkEntry {
+  year: string
+  title: string
+  sub: string
+  tags: string
+  pill?: string
+  href: string
+  cta: string
+}
+// "Index of work" table on the home page
+export const workIndex: WorkEntry[] = [
+  {
+    year: '2026',
+    title: 'HubSpot inbound funnel',
+    sub: 'Landing page, workflow and a two-email nurture sequence',
+    tags: 'HubSpot · Marketing Hub',
+    pill: 'Practice',
+    href: '/hubspot',
+    cta: 'Case study',
+  },
+  {
+    year: '2026',
+    title: 'HubSpot upskilling',
+    sub: 'CRM, pipelines, inbound and reporting',
+    tags: 'Training · In progress',
+    href: '/hubspot',
+    cta: 'Learn with me',
+  },
+  {
+    year: '2022',
+    title: 'Student Success Coach',
+    sub: 'Mbita High School, Homa Bay · 2022 – 2025',
+    tags: 'Coaching · Success plans',
+    href: '/Fidel-Castrol-Resume.pdf',
+    cta: 'Resume',
+  },
+  {
+    year: '2022',
+    title: 'Time management workshops',
+    sub: 'Routines that balance studies, life and the future',
+    tags: 'Workshops',
+    href: contact.whatsapp,
+    cta: 'Book',
+  },
+  {
+    year: '2022',
+    title: 'Peer mentoring circles',
+    sub: 'A supportive, collaborative student community',
+    tags: 'Mentoring',
+    href: contact.whatsapp,
+    cta: 'Book',
+  },
+  {
+    year: '2019',
+    title: 'Advanced Coaching Certification',
+    sub: 'Alison, online · 2019 – 2020',
+    tags: 'Certification',
+    href: '/Fidel-Castrol-Resume.pdf',
+    cta: 'Resume',
+  },
+]

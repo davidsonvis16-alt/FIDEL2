@@ -1,350 +1,391 @@
+import type { ReactNode } from 'react'
 import { MotionConfig, motion } from 'motion/react'
-import { ArrowUpRight, Check, Clock, GraduationCap, SendHorizontal, Users } from 'lucide-react'
+import { ArrowDown, ArrowRight, CornerDownRight } from 'lucide-react'
 import Reveal from '@/components/Reveal'
-import { Avatar, Bubble, Contact, Header, Label, Typing } from '@/components/ui'
+import { Contact, Header } from '@/components/ui'
 import { cn } from '@/lib/cn'
-import { serif, useTitle, wrap } from '@/lib/layout'
+import { useTitle, wrap } from '@/lib/layout'
 import { ease } from '@/lib/motion'
-import { contact, experience, languages, services, shots, skills, stats } from '@/data'
+import { contact, shots, workIndex } from '@/data'
 
 const links = [
-  ['#about', 'About'],
-  ['#services', 'Services'],
+  ['#index', 'Index'],
+  ['#selected', 'Selected'],
   ['/hubspot', 'HubSpot'],
   ['#contact', 'Contact'],
 ] as const
 
-const workflow = shots.find((s) => s.src.includes('workflow'))!
-
-const icons = { GraduationCap, Clock, Check, Users }
-
-const demo = [
-  { out: false, text: 'Hi, I’m Fidel 👋' },
-  { out: false, text: 'I coach students on study habits, time management and staying motivated.' },
-  { out: true, text: 'I want better grades but I keep falling behind.' },
-  { out: false, text: 'That’s exactly what I help with. Let’s build a plan that works for you.' },
+const contents = [
+  ['00', 'Cover', '#top'],
+  ['01', 'Index', '#index'],
+  ['02', 'Selected', '#selected'],
+  ['03', 'Colophon', '#contact'],
 ]
 
-/** A short scripted chat; the composer bar opens the real WhatsApp chat. */
-function ChatDemo() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1, ease, delay: 0.2 }}
-      className="border-coal-line bg-coal-2 mx-auto w-full max-w-[440px] overflow-hidden rounded-2xl border shadow-2xl shadow-black/50"
-    >
-      <div className="bg-panel flex items-center gap-3 px-4 py-3">
-        <Avatar />
-        <div className="leading-tight">
-          <p className="font-semibold">Fidel Castrol</p>
-          <p className="text-ash text-xs">Student success coach</p>
-        </div>
-      </div>
-      <div className="chat-wall min-h-[360px] space-y-2 px-4 py-6">
-        {demo.map((m, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 10, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.35, delay: 0.9 + i * 0.8 }}
-          >
-            <Bubble out={m.out} time={`9:4${i}`}>
-              {m.text}
-            </Bubble>
-          </motion.div>
-        ))}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 + demo.length * 0.8 }}
-        >
-          <Typing />
-        </motion.div>
-      </div>
-      <a
-        href={contact.whatsapp}
-        target="_blank"
-        rel="noopener"
-        className="bg-panel group flex items-center gap-3 px-4 py-3 no-underline"
-      >
-        <span className="bg-coal-line/60 text-ash group-hover:text-bone flex-1 rounded-full px-4 py-2.5 text-sm transition-colors">
-          Type a message to Fidel…
-        </span>
-        <span className="bg-green text-coal-2 grid h-10 w-10 place-items-center rounded-full">
-          <SendHorizontal size={18} />
-        </span>
-      </a>
-    </motion.div>
-  )
-}
+const shot = (name: string) => shots.find((s) => s.src.includes(name))!
+const ext = (href: string) => (href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})
+
+/** Two-column page grid: narrow margin column on the left, content column behind a vertical rule. */
+const grid = 'grid grid-cols-1 md:grid-cols-[140px_1fr]'
+const col = 'md:border-ink/70 md:border-l md:pl-6'
 
 function Hero() {
-  const lines = [
-    <>Better students.</>,
-    <>
-      <em className="text-green">Brighter futures.</em>
-    </>,
-  ]
-
   return (
-    <section
-      className={cn(
-        wrap,
-        'grid grid-cols-1 items-center gap-14 pt-16 pb-24 md:grid-cols-[1.5fr_1fr] md:pt-24 md:pb-32',
-      )}
-    >
-      <div>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="text-ash text-[13px] tracking-[.18em] uppercase"
-        >
-          Student success coach · {contact.location}
-        </motion.p>
-        <h1 className={cn(serif, 'mt-8 text-[clamp(52px,7.4vw,112px)] leading-[.92]')}>
-          {lines.map((l, i) => (
-            <span key={i} className="block overflow-hidden pb-[.06em]">
-              <motion.span
-                className="block"
-                initial={{ y: '110%' }}
-                animate={{ y: 0 }}
-                transition={{ duration: 1.1, ease, delay: 0.15 + i * 0.12 }}
+    <section id="top" className={cn(wrap, grid, 'pt-8')}>
+      <aside className="hidden pr-6 text-[11px] leading-relaxed md:block">
+        <ol className="space-y-1">
+          {contents.map(([n, label, href], i) => (
+            <li key={n}>
+              <a
+                href={href}
+                className={cn('no-underline', i === 0 ? 'font-semibold' : 'text-muted hover:text-ink')}
               >
-                {l}
-              </motion.span>
-            </span>
+                {n} — {label}
+              </a>
+            </li>
           ))}
-        </h1>
+        </ol>
+        <p className="text-muted mt-6">A record of coaching, mentoring and HubSpot work.</p>
+      </aside>
+
+      <div className={cn(col, 'pb-12')}>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_230px]">
+          <div>
+            <p className="text-ink-2 flex flex-wrap gap-x-4 text-[12px]">
+              <span className="text-ink font-semibold">Since 2019</span>
+              <span>One-to-one &amp; groups</span>
+              <span>Study · Habits · HubSpot</span>
+            </p>
+            <h1 className="mt-5 [font-feature-settings:'ss01'] leading-[.86]">
+              {[
+                ['Fidel', 'font-extrabold tracking-[-.065em]'],
+                ['Castrol,', 'font-extrabold tracking-[-.065em]'],
+                ['builds better', 'mt-3 font-light tracking-[-.055em]'],
+                ['students.', 'font-light tracking-[-.055em]'],
+              ].map(([t, cls], i) => (
+                <span key={t} className="block overflow-hidden pb-[.08em]">
+                  <motion.span
+                    initial={{ y: '105%' }}
+                    animate={{ y: 0 }}
+                    transition={{ duration: 0.9, ease, delay: 0.05 + i * 0.09 }}
+                    className={cn('block text-[clamp(60px,11vw,158px)]', cls)}
+                  >
+                    {t.endsWith(',') ? (
+                      <>
+                        {t.slice(0, -1)}
+                        <span className="text-blue">,</span>
+                      </>
+                    ) : (
+                      t
+                    )}
+                  </motion.span>
+                </span>
+              ))}
+            </h1>
+          </div>
+
+          <motion.aside
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+            className="lg:pt-16 lg:text-right"
+          >
+            <p className="text-[64px] leading-none font-bold tracking-[-.06em]">
+              100+<span className="text-blue">.</span>
+            </p>
+            <p className="text-ink-2 mt-2 max-w-[220px] text-[12.5px] lg:ml-auto">
+              students guided to their academic and personal goals.
+            </p>
+            <hr className="border-ink mt-5" />
+            <ul className="text-muted mt-3 space-y-0.5 text-[11px]">
+              <li>+30% student retention, Mbita High School</li>
+              <li>Advanced Coaching Certification, Alison</li>
+              <li>In HubSpot training, 2026</li>
+            </ul>
+          </motion.aside>
+        </div>
+
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease, delay: 0.6 }}
-          className="text-ash mt-10 max-w-[52ch] text-lg"
+          transition={{ delay: 0.5, duration: 0.8, ease }}
+          className="text-ink-2 mt-8 max-w-[48ch] text-[17px]"
         >
-          I’m Fidel Castrol. I help students build better habits, smarter study strategies and the confidence
-          to reach their goals, in school and in life. Coaching in English and Swahili.
+          I build <b className="text-ink">success plans</b> — study habits, routines and regular check-ins
+          where the structure does the heavy lifting and every student is heard. In English and Swahili.
         </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease, delay: 0.75 }}
-          className="mt-10 flex flex-col gap-3 sm:flex-row"
-        >
+
+        <div className="border-line mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 border-t pt-4 text-[13px]">
+          <span className="flex items-center gap-2">
+            <span className="bg-blue h-2 w-2 rounded-full" />
+            Open for coaching &amp; HubSpot study partners
+          </span>
+          <span className="text-muted">/</span>
           <a
             href={contact.whatsapp}
             target="_blank"
             rel="noopener"
-            className="bg-green text-coal group inline-flex items-center justify-center gap-2 rounded-full px-7 py-4 font-semibold no-underline transition-transform hover:-translate-y-0.5"
+            className="border-ink hover:text-blue hover:border-blue border-b font-medium no-underline"
           >
-            Book a coaching session
-            <ArrowUpRight size={18} className="transition-transform group-hover:rotate-45" />
+            Write on WhatsApp
           </a>
+          <span className="text-muted">/</span>
           <a
             href="/hubspot"
-            className="border-coal-line hover:border-bone inline-flex items-center justify-center rounded-full border px-7 py-4 no-underline transition-colors"
+            className="border-ink hover:text-blue hover:border-blue border-b font-medium no-underline"
           >
             Learn HubSpot with me
           </a>
-        </motion.div>
-      </div>
-
-      <ChatDemo />
-    </section>
-  )
-}
-
-function Numbers() {
-  return (
-    <section className="border-coal-line border-y">
-      <div className={cn(wrap, 'grid grid-cols-1 sm:grid-cols-3')}>
-        {stats.map((s, i) => (
-          <Reveal
-            key={s.label}
-            delay={i * 0.1}
-            className="border-coal-line border-b py-10 last:border-b-0 sm:border-r sm:border-b-0 sm:px-8 sm:first:pl-0 sm:last:border-r-0"
-          >
-            <p className={cn(serif, 'text-green text-[clamp(56px,6vw,88px)] leading-none')}>
-              {s.text ?? `${s.value}${s.suffix}`}
-            </p>
-            <p className="text-ash mt-4 max-w-[30ch]">{s.label}</p>
-          </Reveal>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-function Services() {
-  return (
-    <section id="services" className={cn(wrap, 'scroll-mt-20 py-24 md:py-36')}>
-      <Reveal className="grid grid-cols-1 items-end gap-8 md:grid-cols-[1.2fr_1fr]">
-        <div>
-          <Label n="01">Services</Label>
-          <h2 className={cn(serif, 'mt-8 text-[clamp(42px,5.6vw,80px)] leading-[.98]')}>
-            Personal support for <em className="text-green">real progress.</em>
-          </h2>
         </div>
-        <p className="text-ash text-lg">
-          Every student is different. I build practical one-on-one plans and run group sessions around each
-          student’s needs and goals.
-        </p>
-      </Reveal>
+      </div>
+    </section>
+  )
+}
 
-      <ol className="bg-coal-2 border-coal-line mt-16 grid grid-cols-1 overflow-hidden rounded-2xl border md:grid-cols-2">
-        {services.map((s, i) => {
-          const Icon = icons[s.icon]
-          return (
-            <Reveal
-              as="li"
-              key={s.title}
-              delay={(i % 2) * 0.1}
-              className="hover:bg-panel border-coal-line flex gap-4 border-b p-5 transition-colors sm:p-6 md:odd:border-r md:[&:nth-last-child(-n+2)]:border-b-0"
+function Index() {
+  return (
+    <section id="index" className={cn(wrap, 'scroll-mt-16 pt-12')}>
+      <div className={grid}>
+        <p className="text-muted hidden self-end pb-2 text-[11px] md:block">01</p>
+        <div className="border-ink flex items-end justify-between border-b pb-2">
+          <h2 className="text-2xl font-semibold tracking-[-.03em] md:pl-6">Index of work</h2>
+          <p className="text-muted text-[11px]">{workIndex.length} entries</p>
+        </div>
+      </div>
+      <ol>
+        {workIndex.map((w, i) => (
+          <li key={w.title} className={cn(grid, 'group')}>
+            <span className="text-muted group-hover:bg-paper-2 hidden place-items-center text-[11px] transition-colors md:grid">
+              {String.fromCharCode(65 + i)}
+            </span>
+            <a
+              href={w.href}
+              {...ext(w.href)}
+              className={cn(
+                col,
+                'border-line grid grid-cols-[48px_1fr] items-center gap-x-4 gap-y-1 border-b py-3.5 no-underline sm:grid-cols-[56px_1fr_200px_120px]',
+              )}
             >
-              <span className="bg-bubble text-green grid h-12 w-12 shrink-0 place-items-center rounded-full">
-                <Icon size={22} />
+              <span className="text-ink-2 text-[12px]">{w.year}</span>
+              <span>
+                <span className="group-hover:text-blue block text-[19px] font-medium tracking-[-.02em] transition-colors">
+                  {w.title}
+                </span>
+                <span className="text-muted block text-[12px]">{w.sub}</span>
               </span>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="text-lg font-semibold">{s.title}</h3>
-                  <span className="text-green text-xs">0{i + 1}</span>
-                </div>
-                <p className="text-ash mt-1">{s.text}</p>
-              </div>
-            </Reveal>
-          )
-        })}
+              <span className="text-ink-2 col-start-2 text-[12px] sm:col-start-auto">
+                {w.tags}
+                {w.pill && (
+                  <span className="border-ink/40 ml-2 inline-block rounded-full border px-2 text-[10px]">
+                    {w.pill}
+                  </span>
+                )}
+              </span>
+              <span className="col-start-2 flex items-center gap-1.5 text-[12px] font-semibold sm:col-start-auto sm:justify-end">
+                <CornerDownRight size={13} className="text-muted group-hover:text-blue" />
+                {w.cta}
+              </span>
+            </a>
+          </li>
+        ))}
       </ol>
     </section>
   )
 }
 
-function About() {
+function Tile({
+  children,
+  title,
+  sub,
+  n,
+  className,
+  href,
+}: {
+  children: ReactNode
+  title: string
+  sub: string
+  n: string
+  className?: string
+  href?: string
+}) {
+  const body = <div className="h-full overflow-hidden">{children}</div>
   return (
-    <section id="about" className="bg-coal-2 scroll-mt-20">
-      <div className={cn(wrap, 'grid grid-cols-1 gap-16 py-24 md:grid-cols-[1fr_1.15fr] md:gap-24 md:py-36')}>
-        <Reveal className="md:sticky md:top-32 md:self-start">
-          <Label n="02">About</Label>
-          <h2 className={cn(serif, 'mt-8 text-[clamp(42px,5.6vw,80px)] leading-[.98]')}>
-            I’ve been in <em className="text-green">your shoes.</em>
-          </h2>
-          <p className="text-ash mt-6 max-w-[46ch] text-lg">
-            I understand the pressure, the doubts and the challenges. I’m a dedicated coach with a track
-            record of helping students reach their academic and personal goals, building strategies that
-            improve how they learn and make them more resilient.
-          </p>
-          <div className="mt-10 flex flex-wrap gap-x-10 gap-y-4">
-            <div>
-              <p className="text-ash text-sm">Strengths</p>
-              <p className="mt-1">{skills.join(' · ')}</p>
-            </div>
-            <div>
-              <p className="text-ash text-sm">Languages</p>
-              <p className="mt-1">{languages.map((l) => l.name).join(', ')}</p>
-            </div>
-          </div>
-        </Reveal>
-
-        <ol>
-          {experience.map((e, i) => (
-            <Reveal
-              as="li"
-              key={e.title}
-              delay={i * 0.1}
-              className="border-coal-line border-t py-10 first:border-t-0 first:pt-0"
-            >
-              <p className="text-green text-sm tracking-[.14em] uppercase">{e.date}</p>
-              <h3 className={cn(serif, 'mt-3 text-[clamp(30px,3vw,42px)] leading-tight')}>{e.title}</h3>
-              <p className="text-ash mt-1">{e.where}</p>
-              <ul className="mt-6 space-y-3">
-                {e.points.map((p) => (
-                  <li key={p} className="text-bone/85 flex gap-4 text-[15.5px]">
-                    <span className="bg-green mt-[.7em] h-px w-4 shrink-0" />
-                    {p}
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-          ))}
-        </ol>
-      </div>
-    </section>
+    <Reveal as="figure" className={className}>
+      {href ? (
+        <a href={href} className="group block no-underline">
+          {body}
+        </a>
+      ) : (
+        body
+      )}
+      <figcaption className="mt-2.5 flex justify-between gap-4 text-[12px]">
+        <span>
+          <span className="font-semibold">{title}</span> <span className="text-muted">{sub}</span>
+        </span>
+        <span className="text-muted">{n}</span>
+      </figcaption>
+    </Reveal>
   )
 }
 
-function Quote() {
+function Selected() {
+  const workflow = shot('workflow')
+  const email = shot('email-1')
+  const photo = shot('hubspot-inbound')
+  const week = ['MON · plan', 'TUE · study', 'WED · revise', 'THU · study', 'FRI · check-in', 'SAT · rest']
+
   return (
-    <section className={cn(wrap, 'py-24 md:py-36')}>
-      <Reveal as="blockquote" className="max-w-[1050px]">
-        <p className={cn(serif, 'text-[clamp(34px,4.8vw,72px)] leading-[1.05]')}>
-          “Success isn’t about being the best in the world, it’s about being{' '}
-          <em className="text-green">better than you were yesterday.</em>”
+    <section id="selected" className={cn(wrap, grid, 'scroll-mt-16 pt-16')}>
+      <aside className="hidden pr-6 md:block">
+        <p className="text-[34px] leading-none font-bold tracking-[-.04em]">02</p>
+        <p className="text-muted mt-3 text-[11px] leading-relaxed">
+          Selected work, from the classroom to HubSpot. Full details on request.
         </p>
-        <cite className="text-ash mt-8 block text-sm tracking-[.18em] uppercase not-italic">
-          — Fidel Castrol
-        </cite>
-      </Reveal>
-    </section>
-  )
-}
+      </aside>
 
-function HubSpotTeaser() {
-  return (
-    <section className={cn(wrap, 'pb-8')}>
-      <Reveal>
-        <a
-          href="/hubspot"
-          className="border-coal-line bg-coal-2 hover:border-green/50 group grid grid-cols-1 items-center gap-10 overflow-hidden rounded-3xl border p-6 no-underline transition-colors sm:p-10 md:grid-cols-[1fr_1.1fr] md:p-14"
-        >
-          <div>
-            <Label n="03">Now learning</Label>
-            <h2 className={cn(serif, 'mt-8 text-[clamp(40px,5vw,72px)] leading-[.98]')}>
-              Learn HubSpot <em className="text-green">with me.</em>
-            </h2>
-            <p className="text-ash mt-6 max-w-[44ch] text-lg">
-              I’m training in HubSpot: CRM, pipelines, inbound and reporting. See what I’ve built so far, and
-              find your own starting point.
+      <div className={cn(col, 'grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2')}>
+        <Tile className="sm:col-span-2" title="Student success plans" sub="Mbita High School" n="A / 01">
+          <div className="bg-ink text-paper px-6 pt-6 pb-5 sm:px-10 sm:pt-8">
+            <p className="text-[clamp(72px,12vw,150px)] leading-[.85] font-extrabold tracking-[-.06em]">
+              30%
             </p>
-            <span className="text-green mt-8 inline-flex items-center gap-2 font-semibold">
-              Visit the HubSpot page
-              <ArrowUpRight size={18} className="transition-transform group-hover:rotate-45" />
-            </span>
+            <p className="text-paper/50 mt-5 text-[11px] tracking-[.3em] uppercase">
+              Retention · Plans · Check-ins — 2022–2025
+            </p>
+            <hr className="border-paper/15 my-7" />
+            <p className="text-blue text-[clamp(40px,7vw,84px)] leading-none font-extrabold tracking-[-.05em] italic brightness-150">
+              Better students.
+            </p>
+            <p className="text-paper/90 mt-7 max-w-[36ch] text-[clamp(17px,2vw,23px)] leading-snug font-light">
+              Success isn’t about being the best in the world, it’s about being better than you were
+              yesterday.
+            </p>
+            <p className="text-paper/40 mt-4 flex justify-between text-[11px] tracking-[.25em] uppercase">
+              <span>Fidel Castrol</span>
+              <span>p. 001</span>
+            </p>
           </div>
-          <div className="overflow-hidden rounded-2xl bg-white">
+        </Tile>
+
+        <Tile title="Inbound funnel" sub="HubSpot workflow" n="B / 02" href="/hubspot">
+          <div className="bg-blue grid aspect-[4/3] place-items-center p-6 sm:p-8">
             <img
               src={workflow.src}
               alt={workflow.alt}
               width={workflow.w}
               height={workflow.h}
               loading="lazy"
-              className="w-full transition-transform duration-700 group-hover:scale-[1.03]"
+              className="w-full rounded-sm shadow-xl shadow-black/30 transition-transform duration-500 group-hover:scale-[1.03]"
             />
           </div>
-        </a>
-      </Reveal>
+        </Tile>
+
+        <Tile title="Welcome email" sub="sent automatically" n="C / 03" href="/hubspot">
+          <div className="bg-paper-2 border-line grid aspect-[4/3] place-items-center border p-6">
+            <div className="border-ink h-full w-[52%] overflow-hidden border bg-white p-1.5">
+              <img
+                src={email.src}
+                alt={email.alt}
+                width={email.w}
+                height={email.h}
+                loading="lazy"
+                className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
+              />
+            </div>
+          </div>
+        </Tile>
+
+        <Tile title="Time management" sub="weekly routine" n="D / 04">
+          <div className="bg-ink text-paper flex aspect-[4/3] flex-col p-6 sm:p-7">
+            <p className="text-[clamp(28px,3.4vw,42px)] leading-[.95] font-extrabold tracking-[-.045em]">
+              Time
+              <br />
+              <span className="text-red">Management</span>
+            </p>
+            <ul className="border-paper/15 text-paper/55 mt-auto grid grid-cols-3 border-t text-[10.5px] tracking-[.08em]">
+              {week.map((d) => (
+                <li key={d} className="border-paper/15 border-r border-b px-2 py-2.5 nth-[3n]:border-r-0">
+                  {d}
+                </li>
+              ))}
+            </ul>
+            <p className="text-blue mt-3 text-[15px] font-semibold brightness-150">Workshops for students</p>
+          </div>
+        </Tile>
+
+        <Tile title="Peer mentoring" sub="circles" n="E / 05">
+          <div className="flex aspect-[4/3] flex-col">
+            <p className="bg-ink text-paper px-6 py-5 text-[clamp(20px,2.2vw,26px)] font-bold tracking-[-.03em] sm:px-7">
+              Peer Mentoring
+            </p>
+            <div className="bg-blue text-paper flex flex-1 flex-col px-6 py-5 sm:px-7">
+              {['Listen', 'Plan', 'Check in'].map((s, i) => (
+                <p
+                  key={s}
+                  className="flex items-center justify-between py-1 text-[clamp(18px,2vw,24px)] font-medium tracking-[-.02em]"
+                >
+                  <span>
+                    <span className="mr-3 tabular-nums">0{i + 1}</span>
+                    {s}
+                  </span>
+                  {i < 2 ? (
+                    <ArrowRight strokeWidth={1.3} size={32} />
+                  ) : (
+                    <ArrowDown strokeWidth={1.3} size={32} />
+                  )}
+                </p>
+              ))}
+              <p className="border-paper/40 text-paper/70 mt-auto border-t pt-3 text-[10.5px] tracking-[.25em] uppercase">
+                Mentoring circles · 2022–2025
+              </p>
+            </div>
+          </div>
+        </Tile>
+
+        <Tile
+          className="sm:col-span-2"
+          title="HubSpot"
+          sub="where the funnel was built"
+          n="F / 06"
+          href="/hubspot"
+        >
+          <div className="relative aspect-[16/7] overflow-hidden">
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              width={photo.w}
+              height={photo.h}
+              loading="lazy"
+              className="h-full w-full object-cover grayscale transition-all duration-700 group-hover:scale-[1.03] group-hover:grayscale-0"
+            />
+            <p className="bg-paper absolute bottom-0 left-0 flex items-center gap-3 px-5 py-4 text-[clamp(18px,2.4vw,30px)] font-bold tracking-[-.03em]">
+              <span>
+                Now learning HubSpot<span className="text-blue">.</span>
+              </span>
+              <ArrowRight size={22} className="transition-transform group-hover:translate-x-1" />
+            </p>
+          </div>
+        </Tile>
+      </div>
     </section>
   )
 }
 
 export default function Home() {
-  useTitle('Fidel Castrol · Student Success Coach')
+  useTitle('Fidel Castrol — Student Success Coach')
   return (
     <MotionConfig reducedMotion="user">
-      <Header links={links} cta={{ href: '#contact', label: 'Let’s talk' }} status="Student success coach" />
+      <Header role="student success coach & HubSpot learner" links={links} />
       <main>
         <Hero />
-        <Numbers />
-        <Services />
-        <About />
-        <Quote />
-        <HubSpotTeaser />
-        <Contact
-          whatsapp={contact.whatsapp}
-          subject="Coaching session"
-          footerLink={{ href: '/hubspot', label: 'Learn HubSpot' }}
-        />
+        <Index />
+        <Selected />
       </main>
+      <Contact
+        whatsapp={contact.whatsapp}
+        subject="Coaching session"
+        footerLink={{ href: '/hubspot', label: 'Learn HubSpot with me' }}
+      />
     </MotionConfig>
   )
 }
